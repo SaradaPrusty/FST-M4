@@ -1,0 +1,1380 @@
+====================######################===============================
+Activity 1:- 
+=======
+	Next, create a directory named textData in the HDFS.
+		Copy the CSV file, csvFile.csv, into the textData folder in the HDFS.
+		Copy the TXT file, textFile.txt, into the textData folder in the HDFS.
+		Finally use the stat command to get the file statistics:
+		#hdfs dfs -stat "type:%F permissions:%a %u:%g size:%b name:%n" textData/csvFile.csv
+
+======
+			PS C:\Users\06680T744> docker container run -it -p 9870:9870 -p 8088:8088 registry.gitlab.com/training-support/training-environments:hadoop-v1 bash
+	/
+	 * Starting OpenBSD Secure Shell server sshd                                                                     [ OK ]
+	Waiting for hdfs to exit from safemode
+	Safe mode is OFF
+	Started
+	root@6cb55f31383b:/# ls
+	root@6cb55f31383b:/# vim txtFile.txt
+	root@6cb55f31383b:/# vim csvFile.csv
+	root@6cb55f31383b:/# ls
+	root@6cb55f31383b:/# hdfs dfs -mkdir textData
+	root@6cb55f31383b:/# hdfs dfs -ls
+	Found 2 items
+	drwxr-xr-x   - root supergroup          0 2021-08-23 10:44 input
+	drwxr-xr-x   - root supergroup          0 2023-04-13 06:15 textData
+		
+		hdfs dfs -ls /user
+
+		root@6cb55f31383b:/#
+		root@6cb55f31383b:/# ls
+		bin   csvFile.csv  dev  home  lib64  metastore_db  opt   root  sbin  sys  txtFile.txt  var
+		boot  derby.log    etc  lib   media  mnt           proc  run   srv   tmp  usr
+		root@6cb55f31383b:/# pwd
+		/
+		root@6cb55f31383b:/# hdfs dfs -put /csvFile.csv textData/
+		root@6cb55f31383b:/# hdfs dfs -ls
+		Found 2 items
+		drwxr-xr-x   - root supergroup          0 2021-08-23 10:44 input
+		drwxr-xr-x   - root supergroup          0 2023-04-13 06:21 textData
+		root@6cb55f31383b:/# hdfs dfs -ls textData
+		Found 1 items
+		-rw-r--r--   1 root supergroup        527 2023-04-13 06:21 textData/csvFile.csv
+		root@6cb55f31383b:/# hdfs dfs -put /txtFile.txt textData/
+		root@6cb55f31383b:/# hdfs dfs -ls
+		Found 2 items
+		drwxr-xr-x   - root supergroup          0 2021-08-23 10:44 input
+		drwxr-xr-x   - root supergroup          0 2023-04-13 06:24 textData
+		root@6cb55f31383b:/# hdfs dfs -ls textData/
+		Found 2 items
+		-rw-r--r--   1 root supergroup        527 2023-04-13 06:21 textData/csvFile.csv
+		-rw-r--r--   1 root supergroup        157 2023-04-13 06:24 textData/txtFile.txt
+		root@6cb55f31383b:/# hdfs dfs -stat "type:%F permissions:%a %u:%g size:%b name:%n" textData/csvFile.csv
+		type:regular file permissions:644 root:supergroup size:527 name:csvFile.csv
+		root@6cb55f31383b:/# hdfs dfs -cat textData/csvFile.csv
+		"Sell", "List", "Living", "Rooms", "Beds", "Baths", "Age", "Acres", "Taxes"
+		142, 160, 28, 10, 5, 3,  60, 0.28,  3167
+		175, 180, 18,  8, 4, 1,  12, 0.43,  4033
+		129, 132, 13,  6, 3, 1,  41, 0.33,  1471
+		138, 140, 17,  7, 3, 1,  22, 0.46,  3204
+		232, 240, 25,  8, 4, 3,   5, 2.05,  3613
+		135, 140, 18,  7, 4, 3,   9, 0.57,  3028
+		150, 160, 20,  8, 4, 3,  18, 4.00,  3131
+		207, 225, 22,  8, 4, 2,  16, 2.22,  5158
+		271, 285, 30, 10, 5, 2,  30, 0.53,  5702
+		 89,  90, 10,  5, 3, 1,  43, 0.30,  2054
+		153, 157, 22,  8, 3, 3,  18, 0.38,  4127
+		root@6cb55f31383b:/# hdfs dfs -cat textData/txtFile.txt
+		Night. That over years creepeth green fourth had after also seas make. Female living sea very hath. Dry good in is bring fifth under creeping all tree land.
+		root@6cb55f31383b:/#
+
+
+====================######################===============================
+
+Activity 2:-- 
+
+
+
+Let us go back to the Wordcount application example. This time, we will try to execute the same MapReduce job in Pig instead of in Java.
+
+Before we start, create this file and copy it to the HDFS.
+Hello World Bye World
+
+# Opens file01.txt in vim. Paste the text from above and save/exit.
+$ vim file01.txt
+
+# Copy the file into the HDFS
+$ hdfs dfs -put ./file01.txt /user/root/
+
+Copy the file from docker container to local:-
+			PS C:\Users\06680T744> docker ps
+			CONTAINER ID   IMAGE                                                                  COMMAND                  CREATED             STATUS             PORTS                                                                                                                                                                                     NAMES
+			6cb55f31383b   registry.gitlab.com/training-support/training-environments:hadoop-v1   "/etc/bootstrap.sh -…"   About an hour ago   Up About an hour   8030-8033/tcp, 8040/tcp, 8042/tcp, 8080-8081/tcp, 0.0.0.0:8088->8088/tcp, 9000/tcp, 13562/tcp, 40661/tcp, 50010/tcp, 50020/tcp, 50070/tcp, 50075/tcp, 50090/tcp, 0.0.0.0:9870->9870/tcp   zen_archimedes
+			PS C:\Users\06680T744>docker cp 6cb55f31383b:/wordcount.pig .
+			PS C:\Users\06680T744> ls
+
+
+				Directory: C:\Users\06680T744
+
+
+			Mode                 LastWriteTime         Length Name
+			----                 -------------         ------ ----
+			d-----        30-03-2023     16:48                .cisco
+			d-----        12-04-2023     19:03                .docker
+			d-r--l        12-04-2023     19:00                Box
+			d-r---        30-03-2023     16:43                Contacts
+			d-r---        12-04-2023     18:56                Desktop
+			d-r---        04-04-2023     12:48                Documents
+			d-r---        12-04-2023     19:52                Downloads
+			d-r---        30-03-2023     16:43                Favorites
+			d-----        05-04-2023     14:13                GSAgent
+			d-r---        30-03-2023     16:43                Links
+			d-r---        30-03-2023     16:43                Music
+			d-r---        04-04-2023     16:04                OneDrive
+			d-r---        04-04-2023     12:45                Pictures
+			d-r---        30-03-2023     16:43                Saved Games
+			d-r---        30-03-2023     17:05                Searches
+			d-----        05-04-2023     14:15                UninstallerAgent
+			d-r---        30-03-2023     16:52                Videos
+			-a----        13-04-2023     12:50            440 wordcount.pig
+
+=======================================================================================================
+root@6cb55f31383b:/# vim file01.txt
+root@6cb55f31383b:/# cat file01.txt
+Hello World Bye World
+root@6cb55f31383b:/# hdfs dfs -ls
+Found 2 items
+drwxr-xr-x   - root supergroup          0 2021-08-23 10:44 input
+drwxr-xr-x   - root supergroup          0 2023-04-13 06:24 textData
+root@6cb55f31383b:/#
+root@6cb55f31383b:/#
+root@6cb55f31383b:/#
+root@6cb55f31383b:/#
+root@6cb55f31383b:/#
+root@6cb55f31383b:/# hdfs dfs -ls /user/root/
+Found 2 items
+drwxr-xr-x   - root supergroup          0 2021-08-23 10:44 /user/root/input
+drwxr-xr-x   - root supergroup          0 2023-04-13 06:24 /user/root/textData
+root@6cb55f31383b:/# hdfs dfs -mkdir /user/root/sarada
+root@6cb55f31383b:/# hdfs dfs -ls /user/root/sarada
+root@6cb55f31383b:/# hdfs dfs -put ./file01.txt /user/root/sarada
+root@6cb55f31383b:/# hdfs dfs -ls /user/root/sarada
+Found 1 items
+-rw-r--r--   1 root supergroup         22 2023-04-13 07:13 /user/root/sarada/file01.txt
+root@6cb55f31383b:/# hdfs dfs -cat /user/root/sarada/file01.txt
+Hello World Bye World
+root@6cb55f31383b:/# vim wordcount.pig
+root@6cb55f31383b:/# ls
+bin   csvFile.csv  dev  file01.txt  lib    media         mnt  proc  run   srv  tmp          usr  wordcount.pig
+boot  derby.log    etc  home        lib64  metastore_db  opt  root  sbin  sys  txtFile.txt  var
+root@6cb55f31383b:/# pig wordcount.pig
+root@6cb55f31383b:/# hdfs dfs -ls /user/root/results
+Found 2 items
+-rw-r--r--   1 root supergroup          0 2023-04-13 07:21 /user/root/results/_SUCCESS
+-rw-r--r--   1 root supergroup         22 2023-04-13 07:21 /user/root/results/part-r-00000
+root@6cb55f31383b:/# hdfs dfs -cat /user/root/results/part-r-00000
+Bye     1
+Hello   1
+World   2
+root@6cb55f31383b:/#
+
+
+							root@6cb55f31383b:/# cat wordcount.pig
+				-- Load input file from HDFS
+				inputFile = LOAD 'hdfs:///user/root/sarada/file01.txt' AS (line);
+				-- Tokeize each word in the file (Map)
+				words = FOREACH inputFile GENERATE FLATTEN(TOKENIZE(line)) AS word;
+				-- Combine the words from the above stage
+				grpd = GROUP words BY word;
+				-- Count the occurence of each word (Reduce)
+				cntd = FOREACH grpd GENERATE group, COUNT(words);
+				-- Store the result in HDFS
+				STORE cntd INTO 'hdfs:///user/root/results';
+				
+				
+======================================================================================================================================
+Activity 3:-===
+sales.csv--
+
+Product,Price,Payment_Type,Name,City,State,Country
+Product1,1200,Mastercard,carolina,Basildon,England,United Kingdom
+Product1,1200,Visa,Betina,Parkville,MO,United States
+Product1,1200,Mastercard,Federica e Andrea,Astoria,OR,United States
+Product1,1200,Visa,Gouya,Echuca,Victoria,Australia
+Product2,3600,Visa,Gerd W ,Cahaba Heights,AL,United States
+Product1,1200,Visa,LAURENCE,Mickleton,NJ,United States
+Product1,1200,Mastercard,Fleur,Peoria ,IL,United States
+Product1,1200,Mastercard,adam,Martin ,TN,United States
+Product1,1200,Mastercard,Renee Elisabeth,Tel Aviv,Tel Aviv,Israel
+Product1,1200,Visa,Aidan,Chatou,Ile-de-France,France
+Product1,1200,Diners,Stacy,New York ,NY,United States
+Product1,1200,Amex,Heidi,Eindhoven,Noord-Brabant,Netherlands
+Product1,1200,Mastercard,Sean ,Shavano Park,TX,United States
+Product1,1200,Visa,Georgia,Eagle,ID,United States
+
+
+====
+
+root@6cb55f31383b:/# vim sales.csv
+root@6cb55f31383b:/# ls
+bin          derby.log  file01.txt  lib64         mnt                    proc  sales.csv  sys          usr
+boot         dev        home        media         opt                    root  sbin       tmp          var
+csvFile.csv  etc        lib         metastore_db  pig_1681370295850.log  run   srv        txtFile.txt  wordcount.pig
+root@6cb55f31383b:/# hdfs dfs -put ./sales.csv /user/root/
+root@6cb55f31383b:/# vim salesCSV.pig
+root@6cb55f31383b:/# vim salesCSV.pig
+root@6cb55f31383b:/# pig salesCSV.pig
+2023-04-13 16:33:26,239 INFO pig.ExecTypeProvider: Trying ExecType : LOCAL
+2023-04-13 16:33:26,240 INFO pig.ExecTypeProvider: Trying ExecType : MAPREDUCE
+2023-04-13 16:33:26,240 INFO pig.ExecTypeProvider: Picked MAPREDUCE as the ExecType
+2023-04-13 16:33:26,290 [main] INFO  org.apache.pig.Main - Apache Pig version 0.17.0 (r1797386) compiled Jun 02 2017, 15:41:58
+2023-04-13 16:33:26,290 [main] INFO  org.apache.pig.Main - Logging error messages to: //pig_1681403606284.log
+2023-04-13 16:33:26,653 [main] INFO  org.apache.pig.impl.util.Utils - Default bootup file /root/.pigbootup not found
+2023-04-13 16:33:26,698 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.tracker is deprecated. Instead, use mapreduce.jobtracker.address
+2023-04-13 16:33:26,698 [main] INFO  org.apache.pig.backend.hadoop.executionengine.HExecutionEngine - Connecting to hadoop file system at: hdfs://6cb55f31383b:9000
+2023-04-13 16:33:27,165 [main] INFO  org.apache.pig.PigServer - Pig Script ID for the session: PIG-salesCSV.pig-9568b2b9-3a9d-4add-bcbc-3aef802b68cb
+2023-04-13 16:33:27,165 [main] WARN  org.apache.pig.PigServer - ATS is disabled since yarn.timeline-service.enabled set to false
+2023-04-13 16:33:27,838 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.textoutputformat.separator is deprecated. Instead, use mapreduce.output.textoutputformat.separator
+2023-04-13 16:33:27,857 [main] INFO  org.apache.pig.tools.pigstats.ScriptState - Pig features used in the script: GROUP_BY
+2023-04-13 16:33:27,896 [main] INFO  org.apache.pig.data.SchemaTupleBackend - Key [pig.schematuple] was not set... will not generate code.
+2023-04-13 16:33:27,937 [main] INFO  org.apache.pig.newplan.logical.optimizer.LogicalPlanOptimizer - {RULES_ENABLED=[AddForEach, ColumnMapKeyPrune, ConstantCalculator, GroupByConstParallelSetter, LimitOptimizer, LoadTypeCastInserter, MergeFilter, MergeForEach, NestedLimitOptimizer, PartitionFilterOptimizer, PredicatePushdownOptimizer, PushDownForEachFlatten, PushUpFilter, SplitFilter, StreamTypeCastInserter]}
+2023-04-13 16:33:28,006 [main] INFO  org.apache.pig.impl.util.SpillableMemoryManager - Selected heap (PS Old Gen) of size 699400192 to monitor. collectionUsageThreshold = 489580128, usageThreshold = 489580128
+2023-04-13 16:33:28,076 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MRCompiler - File concatenation threshold: 100 optimistic? false
+2023-04-13 16:33:28,087 [main] INFO  org.apache.pig.backend.hadoop.executionengine.util.CombinerOptimizerUtil - Choosing to move algebraic foreach to combiner
+2023-04-13 16:33:28,134 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size before optimization: 1
+2023-04-13 16:33:28,134 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size after optimization: 1
+2023-04-13 16:33:28,234 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-13 16:33:28,438 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+2023-04-13 16:33:28,456 [main] INFO  org.apache.pig.tools.pigstats.mapreduce.MRScriptState - Pig script settings are added to the job
+2023-04-13 16:33:28,466 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.reduce.markreset.buffer.percent is deprecated. Instead, use mapreduce.reduce.markreset.buffer.percent
+2023-04-13 16:33:28,466 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - mapred.job.reduce.markreset.buffer.percent is not set, set to default 0.3
+2023-04-13 16:33:28,469 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.output.compress is deprecated. Instead, use mapreduce.output.fileoutputformat.compress
+2023-04-13 16:33:28,473 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Reduce phase detected, estimating # of required reducers.
+2023-04-13 16:33:28,475 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Using reducer estimator: org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.InputSizeReducerEstimator
+2023-04-13 16:33:28,483 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.InputSizeReducerEstimator - BytesPerReducer=1000000000 maxReducers=999 totalInputFileSize=859
+2023-04-13 16:33:28,483 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting Parallelism to 1
+2023-04-13 16:33:28,483 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.reduce.tasks is deprecated. Instead, use mapreduce.job.reduces
+2023-04-13 16:33:28,484 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - This job cannot be converted run in-process
+2023-04-13 16:33:28,498 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.submit.replication is deprecated. Instead, use mapreduce.client.submit.file.replication
+2023-04-13 16:33:28,742 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/pig-0.17.0-core-h2.jar to DistributedCache through /tmp/temp375217321/tmp1757124132/pig-0.17.0-core-h2.jar
+2023-04-13 16:33:28,776 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/automaton-1.11-8.jar to DistributedCache through /tmp/temp375217321/tmp1337850188/automaton-1.11-8.jar
+2023-04-13 16:33:28,814 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/antlr-runtime-3.4.jar to DistributedCache through /tmp/temp375217321/tmp262519897/antlr-runtime-3.4.jar
+2023-04-13 16:33:28,846 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/joda-time-2.9.3.jar to DistributedCache through /tmp/temp375217321/tmp-1659280394/joda-time-2.9.3.jar
+2023-04-13 16:33:28,865 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting up single store job
+2023-04-13 16:33:28,875 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Key [pig.schematuple] is false, will not generate code.
+2023-04-13 16:33:28,876 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Starting process to move generated code to distributed cacche
+2023-04-13 16:33:28,876 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Setting key [pig.schematuple.classes] with classes to deserialize []
+2023-04-13 16:33:28,987 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 1 map-reduce job(s) waiting for submission.
+2023-04-13 16:33:28,997 [JobControl] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-13 16:33:29,021 [JobControl] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.task.id is deprecated. Instead, use mapreduce.task.attempt.id
+2023-04-13 16:33:29,231 [JobControl] INFO  org.apache.hadoop.mapreduce.JobResourceUploader - Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/root/.staging/job_1681366339271_0003
+2023-04-13 16:33:29,249 [JobControl] WARN  org.apache.hadoop.mapreduce.JobResourceUploader - No job jar file set.  User classes may not be found. See Job or Job#setJar(String).
+2023-04-13 16:33:29,282 [JobControl] INFO  org.apache.pig.builtin.PigStorage - Using PigTextInputFormat
+2023-04-13 16:33:29,292 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input files to process : 1
+2023-04-13 16:33:29,292 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+2023-04-13 16:33:29,331 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2023-04-13 16:33:29,421 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - number of splits:1
+2023-04-13 16:33:29,552 [JobControl] INFO  org.apache.hadoop.conf.Configuration.deprecation - yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+2023-04-13 16:33:29,660 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Submitting tokens for job: job_1681366339271_0003
+2023-04-13 16:33:29,660 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Executing with tokens: []
+2023-04-13 16:33:29,776 [JobControl] INFO  org.apache.hadoop.mapred.YARNRunner - Job jar is not present. Not adding any jar to the list of resources.
+2023-04-13 16:33:29,839 [JobControl] INFO  org.apache.hadoop.conf.Configuration - resource-types.xml not found
+2023-04-13 16:33:29,840 [JobControl] INFO  org.apache.hadoop.yarn.util.resource.ResourceUtils - Unable to find 'resource-types.xml'.
+2023-04-13 16:33:30,167 [JobControl] INFO  org.apache.hadoop.yarn.client.api.impl.YarnClientImpl - Submitted application application_1681366339271_0003
+2023-04-13 16:33:30,201 [JobControl] INFO  org.apache.hadoop.mapreduce.Job - The url to track the job: http://6cb55f31383b:8088/proxy/application_1681366339271_0003/
+2023-04-13 16:33:30,201 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - HadoopJobId: job_1681366339271_0003
+2023-04-13 16:33:30,202 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Processing aliases CountByCountry,GroupByCountry,salesTable
+2023-04-13 16:33:30,202 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - detailed locations: M: salesTable[2,13],salesTable[-1,-1],CountByCountry[6,17],GroupByCountry[4,17] C: CountByCountry[6,17],GroupByCountry[4,17] R: CountByCountry[6,17]
+2023-04-13 16:33:30,211 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 0% complete
+2023-04-13 16:33:30,212 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1681366339271_0003]
+2023-04-13 16:33:44,279 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 50% complete
+2023-04-13 16:33:44,279 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1681366339271_0003]
+2023-04-13 16:33:49,285 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1681366339271_0003]
+2023-04-13 16:33:50,291 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-13 16:33:50,300 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-13 16:33:51,356 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:33:52,357 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:33:53,357 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:33:54,358 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 3 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:33:55,359 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 4 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:33:56,360 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 5 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:33:57,360 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 6 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:33:58,361 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 7 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:33:59,362 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 8 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:34:00,363 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 9 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:34:00,473 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-13 16:34:01,475 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:34:02,476 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 1 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:34:03,477 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 2 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:34:04,478 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 3 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:34:05,479 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 4 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:34:06,481 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 5 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:34:07,481 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 6 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+2023-04-13 16:34:08,482 [main] INFO  org.apache.hadoop.ipc.Client - Retrying connect to server: 0.0.0.0/0.0.0.0:10020. Already tried 7 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=10, sleepTime=1000 MILLISECONDS)
+^Croot@6cb55f31383b:/#
+root@6cb55f31383b:/# hdfs dfs -cat /user/root/salesOutput/part-r-00000
+France:1
+Israel:1
+Country:1
+Australia:1
+Netherlands:1
+United States:9
+United Kingdom:1
+root@6cb55f31383b:/#
+
+
+=================================================================================================================
+
+Activity 4:--
+
+root@6cb55f31383b:/# ls
+bin          derby.log  file01.txt  lib64         mnt                    proc  sales.csv     srv  txtFile.txt  wordcount.pig
+boot         dev        home        media         opt                    root  salesCSV.pig  sys  usr
+csvFile.csv  etc        lib         metastore_db  pig_1681370295850.log  run   sbin          tmp  var
+root@6cb55f31383b:/# cat file01.txt
+Hello World Bye World
+root@6cb55f31383b:/# hive
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop-3.3.1/share/hadoop/common/lib/slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Hive Session ID = bc881003-77d2-4b22-a37e-b85d20c28243
+
+Logging initialized using configuration in jar:file:/usr/local/apache-hive-3.1.2-bin/lib/hive-common-3.1.2.jar!/hive-log4j2.properties Async: true
+Hive Session ID = 2de79bdb-90cd-49b9-ada2-752fdd564b0c
+Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+hive> CREATE TABLE files (line STRING);
+OK
+Time taken: 1.436 seconds
+hive> show tables;
+OK
+files
+Time taken: 0.145 seconds, Fetched: 1 row(s)
+hive>
+    >
+    > LOAD DATA LOCAL INPATH '/file01.txt' INTO TABLE files;
+Loading data to table default.files
+OK
+Time taken: 1.158 seconds
+hive>
+    > CREATE TABLE word_counts AS
+    > SELECT word, count(1) AS count FROM
+    > (SELECT explode(split(line, ' ')) AS word FROM files) w
+    > GROUP BY word
+    > ORDER BY word;
+Query ID = root_20230414060238_49090f46-b1e3-4e8b-afdf-2ce9f60c26e5
+Total jobs = 2
+Launching Job 1 out of 2
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1681366339271_0004, Tracking URL = http://6cb55f31383b:8088/proxy/application_1681366339271_0004/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1681366339271_0004
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-04-14 06:02:50,528 Stage-1 map = 0%,  reduce = 0%
+2023-04-14 06:02:56,786 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 3.79 sec
+2023-04-14 06:03:01,978 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 5.73 sec
+MapReduce Total cumulative CPU time: 5 seconds 730 msec
+Ended Job = job_1681366339271_0004
+Launching Job 2 out of 2
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1681366339271_0005, Tracking URL = http://6cb55f31383b:8088/proxy/application_1681366339271_0005/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1681366339271_0005
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2023-04-14 06:03:15,012 Stage-2 map = 0%,  reduce = 0%
+2023-04-14 06:03:20,276 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 2.44 sec
+2023-04-14 06:03:27,540 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 5.52 sec
+MapReduce Total cumulative CPU time: 5 seconds 520 msec
+Ended Job = job_1681366339271_0005
+Moving data to directory hdfs://6cb55f31383b:9000/user/hive/warehouse/word_counts
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 5.73 sec   HDFS Read: 8169 HDFS Write: 166 SUCCESS
+Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 5.52 sec   HDFS Read: 7290 HDFS Write: 97 SUCCESS
+Total MapReduce CPU Time Spent: 11 seconds 250 msec
+OK
+Time taken: 50.703 seconds
+hive> SELECT * FROM word_count;
+FAILED: SemanticException [Error 10001]: Line 1:14 Table not found 'word_count'
+hive> SELECT * FROM word_counts;
+OK
+Bye     1
+Hello   1
+World   2
+Time taken: 0.222 seconds, Fetched: 3 row(s)
+hive>
+
+
+
+=============================================================================================================
+
+
+Day 4:-- Extra Activities
+
+
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\06680T744> docker exec -it 6cb55f31383bd83e66ba8605e5e640ed22a00b896a39eeb5fb4dddaae568cf92 bash
+root@6cb55f31383b:/# ls
+EmpData.csv  derby.log  file01.txt  media         output.csv             run           srv          usr
+bin          dev        home        metastore_db  pig_1681370295850.log  sales.csv     sys          var
+boot         etc        lib         mnt           proc                   salesCSV.pig  tmp          wordcount.pig
+csvFile.csv  export     lib64       opt           root                   sbin          txtFile.txt
+root@6cb55f31383b:/# vim zipcodes.csv
+root@6cb55f31383b:/# ls
+EmpData.csv  derby.log  file01.txt  media         output.csv             run           srv          usr
+bin          dev        home        metastore_db  pig_1681370295850.log  sales.csv     sys          var
+boot         etc        lib         mnt           proc                   salesCSV.pig  tmp          wordcount.pig
+csvFile.csv  export     lib64       opt           root                   sbin          txtFile.txt  zipcodes.csv
+root@6cb55f31383b:/# pwd
+/
+root@6cb55f31383b:/# hive
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop-3.3.1/share/hadoop/common/lib/slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Hive Session ID = f8e4e89f-f9b5-4795-99be-303f787332fe
+
+Logging initialized using configuration in jar:file:/usr/local/apache-hive-3.1.2-bin/lib/hive-common-3.1.2.jar!/hive-log4j2.properties Async: true
+Hive Session ID = 6878e54d-92fe-4a22-87fd-2a750328c125
+Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+hive> LOAD DATA LOCAL INPATH
+    > '/zipcodes.csv'
+    > INTO TABLE zipcodes;
+FAILED: SemanticException [Error 10001]: Line 3:11 Table not found 'zipcodes'
+hive> CREATE TABLE zipcodes
+    > (RecordNumber int, Country string, City string, Zipcode int)
+    > PARTITIONED BY (state string)
+    > ROW FORMAT DELIMITED
+    > FIELDS TERMINATED BY ',';
+OK
+Time taken: 0.489 seconds
+hive> LOAD DATA LOCAL INPATH
+    > '/zipcodes.csv'
+    >  INTO TABLE zipcodes;
+Query ID = root_20230417064820_3ef102cb-665a-4fd8-ad6b-2fabb9553409
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1681366339271_0009, Tracking URL = http://6cb55f31383b:8088/proxy/application_1681366339271_0009/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1681366339271_0009
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-04-17 06:48:33,784 Stage-1 map = 0%,  reduce = 0%
+2023-04-17 06:48:42,104 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 6.13 sec
+2023-04-17 06:48:47,299 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 8.89 sec
+MapReduce Total cumulative CPU time: 8 seconds 890 msec
+Ended Job = job_1681366339271_0009
+Stage-4 is selected by condition resolver.
+Stage-3 is filtered out by condition resolver.
+Stage-5 is filtered out by condition resolver.
+Moving data to directory hdfs://6cb55f31383b:9000/user/hive/warehouse/zipcodes/.hive-staging_hive_2023-04-17_06-48-20_754_5771061704040042443-1/-ext-10000
+Loading data to table default.zipcodes partition (state=null)
+
+
+         Time taken to load dynamic partitions: 0.823 seconds
+         Time taken for adding to write entity : 0.002 seconds
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 8.89 sec   HDFS Read: 17413 HDFS Write: 2299 SUCCESS
+Total MapReduce CPU Time Spent: 8 seconds 890 msec
+OK
+Time taken: 29.728 seconds
+hive> SHOW PARTITIONS zipcodes;
+OK
+state=AL
+state=AZ
+state=FL
+state=NC
+state=PR
+state=TX
+Time taken: 0.183 seconds, Fetched: 6 row(s)
+hive> dfs -ls -R /user/hive/warehouse/office.db/zipcodes/
+    > ;
+ls: `/user/hive/warehouse/office.db/zipcodes/': No such file or directory
+Command -ls -R /user/hive/warehouse/office.db/zipcodes/ failed with exit code = 1
+Query returned non-zero code: 1, cause: null
+hive> dfs -ls -R /user/
+    > ;
+drwxr-xr-x   - root supergroup          0 2023-04-14 06:01 /user/hive
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:47 /user/hive/warehouse
+drwxr-xr-x   - root supergroup          0 2023-04-14 06:02 /user/hive/warehouse/files
+-rw-r--r--   1 root supergroup         22 2023-04-14 06:02 /user/hive/warehouse/files/file01.txt
+drwxr-xr-x   - root supergroup          0 2023-04-14 07:01 /user/hive/warehouse/office.db
+drwxr-xr-x   - root supergroup          0 2023-04-14 07:03 /user/hive/warehouse/office.db/employee
+-rw-r--r--   1 root supergroup        515 2023-04-14 07:03 /user/hive/warehouse/office.db/employee/EmpData.csv
+drwxr-xr-x   - root supergroup          0 2023-04-14 06:03 /user/hive/warehouse/word_counts
+-rw-r--r--   1 root supergroup         22 2023-04-14 06:03 /user/hive/warehouse/word_counts/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AL
+-rw-r--r--   1 root supergroup         83 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AL/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AZ
+-rw-r--r--   1 root supergroup         40 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AZ/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=FL
+-rw-r--r--   1 root supergroup         91 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=FL/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=NC
+-rw-r--r--   1 root supergroup         72 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=NC/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=PR
+-rw-r--r--   1 root supergroup        121 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=PR/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=TX
+-rw-r--r--   1 root supergroup         83 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=TX/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-14 07:08 /user/root
+drwxr-xr-x   - root supergroup          0 2021-08-23 10:44 /user/root/input
+-rw-r--r--   1 root supergroup       9213 2021-08-23 10:44 /user/root/input/capacity-scheduler.xml
+-rw-r--r--   1 root supergroup       1335 2021-08-23 10:44 /user/root/input/configuration.xsl
+-rw-r--r--   1 root supergroup       2567 2021-08-23 10:44 /user/root/input/container-executor.cfg
+-rw-r--r--   1 root supergroup        155 2021-08-23 10:44 /user/root/input/core-site.xml
+-rw-r--r--   1 root supergroup        154 2021-08-23 10:44 /user/root/input/core-site.xml.template
+-rw-r--r--   1 root supergroup       3999 2021-08-23 10:44 /user/root/input/hadoop-env.cmd
+-rw-r--r--   1 root supergroup      16794 2021-08-23 10:44 /user/root/input/hadoop-env.sh
+-rw-r--r--   1 root supergroup       3321 2021-08-23 10:44 /user/root/input/hadoop-metrics2.properties
+-rw-r--r--   1 root supergroup      11765 2021-08-23 10:44 /user/root/input/hadoop-policy.xml
+-rw-r--r--   1 root supergroup       3414 2021-08-23 10:44 /user/root/input/hadoop-user-functions.sh.example
+-rw-r--r--   1 root supergroup        683 2021-08-23 10:44 /user/root/input/hdfs-rbf-site.xml
+-rw-r--r--   1 root supergroup        354 2021-08-23 10:44 /user/root/input/hdfs-site.xml
+-rw-r--r--   1 root supergroup       1484 2021-08-23 10:44 /user/root/input/httpfs-env.sh
+-rw-r--r--   1 root supergroup       1657 2021-08-23 10:44 /user/root/input/httpfs-log4j.properties
+-rw-r--r--   1 root supergroup        620 2021-08-23 10:44 /user/root/input/httpfs-site.xml
+-rw-r--r--   1 root supergroup       3518 2021-08-23 10:44 /user/root/input/kms-acls.xml
+-rw-r--r--   1 root supergroup       1351 2021-08-23 10:44 /user/root/input/kms-env.sh
+-rw-r--r--   1 root supergroup       1860 2021-08-23 10:44 /user/root/input/kms-log4j.properties
+-rw-r--r--   1 root supergroup        682 2021-08-23 10:44 /user/root/input/kms-site.xml
+-rw-r--r--   1 root supergroup      13700 2021-08-23 10:44 /user/root/input/log4j.properties
+-rw-r--r--   1 root supergroup        951 2021-08-23 10:44 /user/root/input/mapred-env.cmd
+-rw-r--r--   1 root supergroup       1764 2021-08-23 10:44 /user/root/input/mapred-env.sh
+-rw-r--r--   1 root supergroup       4113 2021-08-23 10:44 /user/root/input/mapred-queues.xml.template
+-rw-r--r--   1 root supergroup        138 2021-08-23 10:44 /user/root/input/mapred-site.xml
+drwxr-xr-x   - root supergroup          0 2021-08-23 10:44 /user/root/input/shellprofile.d
+-rw-r--r--   1 root supergroup       3880 2021-08-23 10:44 /user/root/input/shellprofile.d/example.sh
+-rw-r--r--   1 root supergroup       2316 2021-08-23 10:44 /user/root/input/ssl-client.xml.example
+-rw-r--r--   1 root supergroup       2697 2021-08-23 10:44 /user/root/input/ssl-server.xml.example
+-rw-r--r--   1 root supergroup       2681 2021-08-23 10:44 /user/root/input/user_ec_policies.xml.template
+-rw-r--r--   1 root supergroup         10 2021-08-23 10:44 /user/root/input/workers
+-rw-r--r--   1 root supergroup       2250 2021-08-23 10:44 /user/root/input/yarn-env.cmd
+-rw-r--r--   1 root supergroup       6329 2021-08-23 10:44 /user/root/input/yarn-env.sh
+-rw-r--r--   1 root supergroup       1525 2021-08-23 10:44 /user/root/input/yarn-site.xml
+-rw-r--r--   1 root supergroup       2591 2021-08-23 10:44 /user/root/input/yarnservice-log4j.properties
+drwxr-xr-x   - root supergroup          0 2023-04-14 07:08 /user/root/output
+drwxr-xr-x   - root supergroup          0 2023-04-14 07:08 /user/root/output/export
+-rw-r--r--   1 root supergroup        480 2023-04-14 07:08 /user/root/output/export/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-13 07:21 /user/root/results
+-rw-r--r--   1 root supergroup          0 2023-04-13 07:21 /user/root/results/_SUCCESS
+-rw-r--r--   1 root supergroup         22 2023-04-13 07:21 /user/root/results/part-r-00000
+-rw-r--r--   1 root supergroup        859 2023-04-13 16:29 /user/root/sales.csv
+drwxr-xr-x   - root supergroup          0 2023-04-13 16:33 /user/root/salesOutput
+-rw-r--r--   1 root supergroup          0 2023-04-13 16:33 /user/root/salesOutput/_SUCCESS
+-rw-r--r--   1 root supergroup         87 2023-04-13 16:33 /user/root/salesOutput/part-r-00000
+drwxr-xr-x   - root supergroup          0 2023-04-13 07:16 /user/root/sarada
+-rw-r--r--   1 root supergroup         22 2023-04-13 07:13 /user/root/sarada/file01.txt
+-rw-r--r--   1 root supergroup        433 2023-04-13 07:16 /user/root/sarada/wordcount.pig
+drwxr-xr-x   - root supergroup          0 2023-04-13 06:24 /user/root/textData
+-rw-r--r--   1 root supergroup        527 2023-04-13 06:21 /user/root/textData/csvFile.csv
+-rw-r--r--   1 root supergroup        157 2023-04-13 06:24 /user/root/textData/txtFile.txt
+hive> dfs -ls -R /user/hive/warehouse/zipcodes/
+    > ;
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AL
+-rw-r--r--   1 root supergroup         83 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AL/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AZ
+-rw-r--r--   1 root supergroup         40 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AZ/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=FL
+-rw-r--r--   1 root supergroup         91 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=FL/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=NC
+-rw-r--r--   1 root supergroup         72 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=NC/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=PR
+-rw-r--r--   1 root supergroup        121 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=PR/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=TX
+-rw-r--r--   1 root supergroup         83 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=TX/000000_0
+hive> CREATE TABLE zipcodes
+    > (RecordNumber int, Country string, City string, Zipcode int)
+    > PARTITIONED BY (state string)
+    > CLUSTERED BY (Zipcode) INTO 32 BUCKETS
+    > ROW FORMAT DELIMITED
+    > FIELDS TERMINATED BY ',';
+FAILED: Execution Error, return code 1 from org.apache.hadoop.hive.ql.exec.DDLTask. AlreadyExistsException(message:Table hive.default.zipcodes already exists)
+hive> CREATE TABLE zipcodebuckets
+    >  (RecordNumber int, Country string, City string, Zipcode int)
+    > PARTITIONED BY (state string)
+    > CLUSTERED BY (Zipcode) INTO 32 BUCKETS
+    > ROW FORMAT DELIMITED
+    > FIELDS TERMINATED BY ',';
+OK
+Time taken: 0.064 seconds
+hive>
+    > select * from tab;
+FAILED: SemanticException [Error 10001]: Line 1:14 Table not found 'tab'
+hive> select * from table;
+MismatchedTokenException(-1!=361)
+        at org.antlr.runtime.BaseRecognizer.recoverFromMismatchedToken(BaseRecognizer.java:617)
+        at org.antlr.runtime.BaseRecognizer.match(BaseRecognizer.java:115)
+        at org.apache.hadoop.hive.ql.parse.HiveParser_FromClauseParser.virtualTableSource(HiveParser_FromClauseParser.java:6293)
+        at org.apache.hadoop.hive.ql.parse.HiveParser_FromClauseParser.atomjoinSource(HiveParser_FromClauseParser.java:1649)
+        at org.apache.hadoop.hive.ql.parse.HiveParser_FromClauseParser.joinSource(HiveParser_FromClauseParser.java:1903)
+        at org.apache.hadoop.hive.ql.parse.HiveParser_FromClauseParser.fromSource(HiveParser_FromClauseParser.java:1527)
+        at org.apache.hadoop.hive.ql.parse.HiveParser_FromClauseParser.fromClause(HiveParser_FromClauseParser.java:1370)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.fromClause(HiveParser.java:45020)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.atomSelectStatement(HiveParser.java:39792)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.selectStatement(HiveParser.java:40044)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.regularBody(HiveParser.java:39690)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.queryStatementExpressionBody(HiveParser.java:38900)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.queryStatementExpression(HiveParser.java:38788)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.execStatement(HiveParser.java:2396)
+        at org.apache.hadoop.hive.ql.parse.HiveParser.statement(HiveParser.java:1420)
+        at org.apache.hadoop.hive.ql.parse.ParseDriver.parse(ParseDriver.java:220)
+        at org.apache.hadoop.hive.ql.parse.ParseUtils.parse(ParseUtils.java:74)
+        at org.apache.hadoop.hive.ql.parse.ParseUtils.parse(ParseUtils.java:67)
+        at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:616)
+        at org.apache.hadoop.hive.ql.Driver.compileInternal(Driver.java:1826)
+        at org.apache.hadoop.hive.ql.Driver.compileAndRespond(Driver.java:1773)
+        at org.apache.hadoop.hive.ql.Driver.compileAndRespond(Driver.java:1768)
+        at org.apache.hadoop.hive.ql.reexec.ReExecDriver.compileAndRespond(ReExecDriver.java:126)
+        at org.apache.hadoop.hive.ql.reexec.ReExecDriver.run(ReExecDriver.java:214)
+        at org.apache.hadoop.hive.cli.CliDriver.processLocalCmd(CliDriver.java:239)
+        at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:188)
+        at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:402)
+        at org.apache.hadoop.hive.cli.CliDriver.executeDriver(CliDriver.java:821)
+        at org.apache.hadoop.hive.cli.CliDriver.run(CliDriver.java:759)
+        at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:683)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.lang.reflect.Method.invoke(Method.java:498)
+        at org.apache.hadoop.util.RunJar.run(RunJar.java:323)
+        at org.apache.hadoop.util.RunJar.main(RunJar.java:236)
+FAILED: ParseException line 1:19 mismatched input '<EOF>' expecting ( near 'table' in virtual table source
+hive>
+    > LOAD DATA LOCAL INPATH
+    > '/resources/zipcodes.csv'
+    > INTO TABLE
+    > zipcodebuckets;
+Query ID = root_20230417065543_e928e558-7f9f-493a-94a5-d98eed9f9c26
+Total jobs = 2
+Launching Job 1 out of 2
+Number of reduce tasks determined at compile time: 32
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1681366339271_0010, Tracking URL = http://6cb55f31383b:8088/proxy/application_1681366339271_0010/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1681366339271_0010
+Hadoop job information for Stage-1: number of mappers: 0; number of reducers: 32
+2023-04-17 06:55:51,956 Stage-1 map = 0%,  reduce = 0%
+2023-04-17 06:56:03,884 Stage-1 map = 0%,  reduce = 3%, Cumulative CPU 9.98 sec
+2023-04-17 06:56:08,464 Stage-1 map = 0%,  reduce = 6%, Cumulative CPU 18.21 sec
+2023-04-17 06:56:09,613 Stage-1 map = 0%,  reduce = 9%, Cumulative CPU 26.03 sec
+2023-04-17 06:56:12,985 Stage-1 map = 0%,  reduce = 16%, Cumulative CPU 41.12 sec
+2023-04-17 06:56:15,146 Stage-1 map = 0%,  reduce = 19%, Cumulative CPU 48.59 sec
+2023-04-17 06:56:18,461 Stage-1 map = 0%,  reduce = 22%, Cumulative CPU 55.09 sec
+2023-04-17 06:56:20,635 Stage-1 map = 0%,  reduce = 25%, Cumulative CPU 61.42 sec
+2023-04-17 06:56:22,774 Stage-1 map = 0%,  reduce = 28%, Cumulative CPU 67.64 sec
+2023-04-17 06:56:24,960 Stage-1 map = 0%,  reduce = 31%, Cumulative CPU 73.45 sec
+2023-04-17 06:56:26,092 Stage-1 map = 0%,  reduce = 34%, Cumulative CPU 79.38 sec
+2023-04-17 06:56:27,151 Stage-1 map = 0%,  reduce = 38%, Cumulative CPU 85.35 sec
+2023-04-17 06:56:30,474 Stage-1 map = 0%,  reduce = 41%, Cumulative CPU 91.25 sec
+2023-04-17 06:56:32,600 Stage-1 map = 0%,  reduce = 44%, Cumulative CPU 97.08 sec
+2023-04-17 06:56:33,742 Stage-1 map = 0%,  reduce = 47%, Cumulative CPU 102.79 sec
+2023-04-17 06:56:35,928 Stage-1 map = 0%,  reduce = 50%, Cumulative CPU 108.82 sec
+2023-04-17 06:56:39,214 Stage-1 map = 0%,  reduce = 56%, Cumulative CPU 120.98 sec
+2023-04-17 06:56:42,542 Stage-1 map = 0%,  reduce = 59%, Cumulative CPU 127.53 sec
+2023-04-17 06:56:45,826 Stage-1 map = 0%,  reduce = 66%, Cumulative CPU 139.09 sec
+2023-04-17 06:56:48,037 Stage-1 map = 0%,  reduce = 69%, Cumulative CPU 139.09 sec
+2023-04-17 06:56:51,392 Stage-1 map = 0%,  reduce = 75%, Cumulative CPU 156.32 sec
+2023-04-17 06:56:54,658 Stage-1 map = 0%,  reduce = 78%, Cumulative CPU 162.53 sec
+2023-04-17 06:56:57,912 Stage-1 map = 0%,  reduce = 84%, Cumulative CPU 175.18 sec
+2023-04-17 06:57:00,102 Stage-1 map = 0%,  reduce = 88%, Cumulative CPU 180.98 sec
+2023-04-17 06:57:03,388 Stage-1 map = 0%,  reduce = 94%, Cumulative CPU 191.97 sec
+2023-04-17 06:57:04,415 Stage-1 map = 0%,  reduce = 97%, Cumulative CPU 197.88 sec
+2023-04-17 06:57:05,441 Stage-1 map = 0%,  reduce = 100%, Cumulative CPU 201.31 sec
+MapReduce Total cumulative CPU time: 3 minutes 21 seconds 310 msec
+Ended Job = job_1681366339271_0010
+Loading data to table default.zipcodebuckets partition (state=null)
+
+
+         Time taken to load dynamic partitions: 0.011 seconds
+         Time taken for adding to write entity : 0.0 seconds
+Launching Job 2 out of 2
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1681366339271_0011, Tracking URL = http://6cb55f31383b:8088/proxy/application_1681366339271_0011/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1681366339271_0011
+Hadoop job information for Stage-3: number of mappers: 1; number of reducers: 1
+2023-04-17 06:57:19,657 Stage-3 map = 0%,  reduce = 0%
+2023-04-17 06:57:25,845 Stage-3 map = 100%,  reduce = 0%, Cumulative CPU 3.95 sec
+2023-04-17 06:57:32,030 Stage-3 map = 100%,  reduce = 100%, Cumulative CPU 6.98 sec
+MapReduce Total cumulative CPU time: 6 seconds 980 msec
+Ended Job = job_1681366339271_0011
+MapReduce Jobs Launched:
+Stage-Stage-1: Reduce: 32   Cumulative CPU: 201.31 sec   HDFS Read: 276384 HDFS Write: 3136 SUCCESS
+Stage-Stage-3: Map: 1  Reduce: 1   Cumulative CPU: 6.98 sec   HDFS Read: 24807 HDFS Write: 87 SUCCESS
+Total MapReduce CPU Time Spent: 3 minutes 28 seconds 290 msec
+OK
+Time taken: 110.611 seconds
+hive> SELECT * FROM zipcodes WHERE state='PR' and zipcode=704;
+OK
+1       US      PARC PARQUE     704     PR
+2       US      PASEO COSTA DEL SUR     704     PR
+4       US      URB EUGENE RICE 704     PR
+3       US      SECT LANAUSSE   704     PR
+Time taken: 2.208 seconds, Fetched: 4 row(s)
+hive> dfs -ls -R /user/hive/
+    > ;
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:54 /user/hive/warehouse
+drwxr-xr-x   - root supergroup          0 2023-04-14 06:02 /user/hive/warehouse/files
+-rw-r--r--   1 root supergroup         22 2023-04-14 06:02 /user/hive/warehouse/files/file01.txt
+drwxr-xr-x   - root supergroup          0 2023-04-14 07:01 /user/hive/warehouse/office.db
+drwxr-xr-x   - root supergroup          0 2023-04-14 07:03 /user/hive/warehouse/office.db/employee
+-rw-r--r--   1 root supergroup        515 2023-04-14 07:03 /user/hive/warehouse/office.db/employee/EmpData.csv
+drwxr-xr-x   - root supergroup          0 2023-04-14 06:03 /user/hive/warehouse/word_counts
+-rw-r--r--   1 root supergroup         22 2023-04-14 06:03 /user/hive/warehouse/word_counts/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:57 /user/hive/warehouse/zipcodebuckets
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AL
+-rw-r--r--   1 root supergroup         83 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AL/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AZ
+-rw-r--r--   1 root supergroup         40 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=AZ/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=FL
+-rw-r--r--   1 root supergroup         91 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=FL/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=NC
+-rw-r--r--   1 root supergroup         72 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=NC/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=PR
+-rw-r--r--   1 root supergroup        121 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=PR/000000_0
+drwxr-xr-x   - root supergroup          0 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=TX
+-rw-r--r--   1 root supergroup         83 2023-04-17 06:48 /user/hive/warehouse/zipcodes/state=TX/000000_0
+hive> dfs -ls -R /user/hive/warehouse/zipcodebuckets
+    > ;
+hive>
+
+
+
+=======================================================================================
+
+Project Acticity:----
+=============
+
+				-- Load input file from HDFS
+				inputFile = LOAD 'hdfs:///user/root/sarada/file01.txt' AS (line);
+				-- Tokeize each word in the file (Map)
+				words = FOREACH inputFile GENERATE FLATTEN(TOKENIZE(line)) AS word;
+				-- Combine the words from the above stage
+				grpd = GROUP words BY word;
+				-- Count the occurence of each word (Reduce)
+				cntd = FOREACH grpd GENERATE group, COUNT(words);
+				-- Store the result in HDFS
+				STORE cntd INTO 'hdfs:///user/root/results';
+
+
+
+				-- Load the CSV file
+				salesTable = LOAD 'hdfs:///user/root/sales.csv' USING PigStorage(',') AS (Product:chararray,Price:chararray,Payment_Type:chararray,Name:chararray,City:chararray,State:chararray,Country:chararray);
+
+
+				--===
+
+				diagCount = LOAD 'hdfs:///episodeIV_dialouges.txt' USING PigStorage('	') AS (CharName:chararray,diag:chararray);
+				GroupByCharName = GROUP diagCount BY CharName;
+				CountByCharName = FOREACH GroupByCharName GENERATE CONCAT((chararray)$0, CONCAT(':', (chararray)COUNT($1)));
+				STORE CountByCharName INTO 'diagCountIV' USING PigStorage('\t');
+
+
+From Chandra:--- Pig Acticity answer
+
+from Chandra Kuchibhotla (internal) to everyone:    12:22 PM
+-- Load data from HDFS
+inputDialouges = LOAD 'hdfs:///user/chandra/inputs' USING PigStorage('\t') AS (name:chararray, line:chararray);
+-- Filter out the first 2 lines
+ranked = RANK inputDialouges;
+OnlyDialouges = FILTER ranked BY (rank_inputDialouges > 2);
+-- Group by name
+groupByName = GROUP OnlyDialouges BY name;
+-- Count the number of lines by each character
+names = FOREACH groupByName GENERATE $0 as name, COUNT($1) as no_of_lines;
+namesOrdered = ORDER names BY no_of_lines DESC;
+-- Remove the outputs folder
+rmf hdfs:///user/chandra/outputs
+-- Store result in HDFS
+STORE namesOrdered INTO 'hdfs:///user/chandra/outputs' USING PigStorage('\t');
+
+-- For Episode IV
+CREATE TABLE episodeIV (name STRING, line STRING) 
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' TBLPROPERTIES ("skip.header.line.count"="2");
+LOAD DATA LOCAL INPATH '/root/inputs/episodeIV_dialouges.txt' INTO TABLE episodeIV;
+SELECT name, COUNT(name) AS no_of_lines from episodeIV GROUP BY name ORDER BY no_of_lines DESC;
+
+
+Mine ans:--
+-- Load data from HDFS
+inputDialouges = LOAD 'hdfs:///projActicity' USING PigStorage('\t') AS (CharName:chararray,diag:chararray);
+-- Filter out the first 2 lines
+ranked = RANK inputDialouges;
+OnlyDialouges = FILTER ranked BY (rank_inputDialouges > 2);
+-- Group by name
+GroupByCharName = GROUP OnlyDialouges BY CharName;
+-- Count the number of lines by each character
+CountByCharName = FOREACH GroupByCharName GENERATE CONCAT((chararray)$0, CONCAT(':', (chararray)COUNT($1)));
+STORE CountByCharName INTO 'diagCountIV' USING PigStorage('\t');
+
+
+
+==========
+	/usr/local/hadoop/sbin/mr-jobhistory-daemon.sh start historyserver -- to remove those continuously coming Line
+	
+	
+	
+	###
+	
+root@6cb55f31383b:/#
+root@6cb55f31383b:/#
+root@6cb55f31383b:/# hdfs dfs -ls /
+Found 4 items
+drwxr-xr-x   - root supergroup          0 2023-04-14 07:09 /export
+drwxr-xr-x   - root supergroup          0 2023-04-24 07:18 /projActicity
+drwxr-xr-x   - root supergroup          0 2023-04-24 07:18 /tmp
+drwxr-xr-x   - root supergroup          0 2023-04-14 06:01 /user
+root@6cb55f31383b:/# hdfs dfs -ls /projActicity
+Found 3 items
+-rw-r--r--   1 root supergroup      67671 2023-04-24 06:08 /projActicity/episodeIV_dialouges.txt
+-rw-r--r--   1 root supergroup      43658 2023-04-24 06:08 /projActicity/episodeVI_dialouges.txt
+-rw-r--r--   1 root supergroup      49891 2023-04-24 06:08 /projActicity/episodeV_dialouges.txt
+root@6cb55f31383b:/#
+root@6cb55f31383b:/# hdfs dfs -mkdir /projActicity/output
+root@6cb55f31383b:/# hdfs dfs -ls /projActicity
+Found 4 items
+-rw-r--r--   1 root supergroup      67671 2023-04-24 06:08 /projActicity/episodeIV_dialouges.txt
+-rw-r--r--   1 root supergroup      43658 2023-04-24 06:08 /projActicity/episodeVI_dialouges.txt
+-rw-r--r--   1 root supergroup      49891 2023-04-24 06:08 /projActicity/episodeV_dialouges.txt
+drwxr-xr-x   - root supergroup          0 2023-04-24 07:21 /projActicity/output
+root@6cb55f31383b:/#
+root@6cb55f31383b:/#
+root@6cb55f31383b:/# ls
+EmpData.csv  dev                      etc         lib64         output.csv             run           sys          wordcount.pig
+bin          diagCount.pig            export      media         pig_1681370295850.log  sales.csv     tmp          zipcodes.csv
+boot         episodeIV_dialouges.txt  file01.txt  metastore_db  pig_1682319010734.log  salesCSV.pig  txtFile.txt
+csvFile.csv  episodeVI_dialouges.txt  home        mnt           proc                   sbin          usr
+derby.log    episodeV_dialouges.txt   lib         opt           root                   srv           var
+root@6cb55f31383b:/# cat hdfs dfs -ls /projActicity
+cat: invalid option -- 'l'
+Try 'cat --help' for more information.
+root@6cb55f31383b:/# cat diagCount.pig
+-- Load data from HDFS
+inputDialouges = LOAD 'hdfs:///projActicity' USING PigStorage('\t') AS (name:chararray, line:chararray);
+-- Filter out the first 2 lines
+ranked = RANK inputDialouges;
+OnlyDialouges = FILTER ranked BY (rank_inputDialouges > 2);
+-- Group by name
+groupByName = GROUP OnlyDialouges BY name;
+-- Count the number of lines by each character
+names = FOREACH groupByName GENERATE $0 as name, COUNT($1) as no_of_lines;
+namesOrdered = ORDER names BY no_of_lines DESC;
+-- Remove the outputs folder
+rmf hdfs:///projActicity/output
+-- Store result in HDFS
+STORE namesOrdered INTO 'hdfs:///projActicity/output' USING PigStorage('\t');
+root@6cb55f31383b:/#
+root@6cb55f31383b:/# pig diagCount.pig
+2023-04-24 07:22:15,892 INFO pig.ExecTypeProvider: Trying ExecType : LOCAL
+2023-04-24 07:22:15,894 INFO pig.ExecTypeProvider: Trying ExecType : MAPREDUCE
+2023-04-24 07:22:15,894 INFO pig.ExecTypeProvider: Picked MAPREDUCE as the ExecType
+2023-04-24 07:22:15,930 [main] INFO  org.apache.pig.Main - Apache Pig version 0.17.0 (r1797386) compiled Jun 02 2017, 15:41:58
+2023-04-24 07:22:15,930 [main] INFO  org.apache.pig.Main - Logging error messages to: //pig_1682320935926.log
+2023-04-24 07:22:16,172 [main] INFO  org.apache.pig.impl.util.Utils - Default bootup file /root/.pigbootup not found
+2023-04-24 07:22:16,215 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.tracker is deprecated. Instead, use mapreduce.jobtracker.address
+2023-04-24 07:22:16,215 [main] INFO  org.apache.pig.backend.hadoop.executionengine.HExecutionEngine - Connecting to hadoop file system at: hdfs://6cb55f31383b:9000
+2023-04-24 07:22:16,634 [main] INFO  org.apache.pig.PigServer - Pig Script ID for the session: PIG-diagCount.pig-5a13ab0a-217b-47f9-b9eb-427a8ba87681
+2023-04-24 07:22:16,634 [main] WARN  org.apache.pig.PigServer - ATS is disabled since yarn.timeline-service.enabled set to false
+2023-04-24 07:22:17,338 [main] INFO  org.apache.pig.tools.grunt.GruntParser - Waited 0ms to delete file
+2023-04-24 07:22:17,400 [main] WARN  org.apache.pig.newplan.BaseOperatorPlan - Encountered Warning IMPLICIT_CAST_TO_LONG 1 time(s).
+2023-04-24 07:22:17,404 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.textoutputformat.separator is deprecated. Instead, use mapreduce.output.textoutputformat.separator
+2023-04-24 07:22:17,420 [main] INFO  org.apache.pig.tools.pigstats.ScriptState - Pig features used in the script: GROUP_BY,ORDER_BY,RANK,FILTER
+2023-04-24 07:22:17,457 [main] INFO  org.apache.pig.data.SchemaTupleBackend - Key [pig.schematuple] was not set... will not generate code.
+2023-04-24 07:22:17,495 [main] INFO  org.apache.pig.newplan.logical.optimizer.LogicalPlanOptimizer - {RULES_ENABLED=[AddForEach, ColumnMapKeyPrune, ConstantCalculator, GroupByConstParallelSetter, LimitOptimizer, LoadTypeCastInserter, MergeFilter, MergeForEach, NestedLimitOptimizer, PartitionFilterOptimizer, PredicatePushdownOptimizer, PushDownForEachFlatten, PushUpFilter, SplitFilter, StreamTypeCastInserter]}
+2023-04-24 07:22:17,538 [main] INFO  org.apache.pig.impl.util.SpillableMemoryManager - Selected heap (PS Old Gen) of size 699400192 to monitor. collectionUsageThreshold = 489580128, usageThreshold = 489580128
+2023-04-24 07:22:17,649 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MRCompiler - File concatenation threshold: 100 optimistic? false
+2023-04-24 07:22:17,694 [main] INFO  org.apache.pig.backend.hadoop.executionengine.util.CombinerOptimizerUtil - Choosing to move algebraic foreach to combiner
+2023-04-24 07:22:17,716 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.SecondaryKeyOptimizerMR - Using Secondary Key Optimization for MapReduce node scope-35
+2023-04-24 07:22:17,724 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size before optimization: 4
+2023-04-24 07:22:17,724 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size after optimization: 4
+2023-04-24 07:22:17,805 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:22:17,978 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+2023-04-24 07:22:17,993 [main] INFO  org.apache.pig.tools.pigstats.mapreduce.MRScriptState - Pig script settings are added to the job2023-04-24 07:22:18,000 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.reduce.markreset.buffer.percent is deprecated. Instead, use mapreduce.reduce.markreset.buffer.percent
+2023-04-24 07:22:18,000 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - mapred.job.reduce.markreset.buffer.percent is not set, set to default 0.3
+2023-04-24 07:22:18,003 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.output.compress is deprecated. Instead, use mapreduce.output.fileoutputformat.compress
+2023-04-24 07:22:18,005 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - This job cannot be converted run in-process
+2023-04-24 07:22:18,016 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.submit.replication is deprecated. Instead, use mapreduce.client.submit.file.replication
+2023-04-24 07:22:18,286 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/pig-0.17.0-core-h2.jar to DistributedCache through /tmp/temp561788424/tmp1262022033/pig-0.17.0-core-h2.jar
+2023-04-24 07:22:18,730 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/automaton-1.11-8.jar to DistributedCache through /tmp/temp561788424/tmp1306992069/automaton-1.11-8.jar
+2023-04-24 07:22:18,764 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/antlr-runtime-3.4.jar to DistributedCache through /tmp/temp561788424/tmp151194181/antlr-runtime-3.4.jar
+2023-04-24 07:22:18,807 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/joda-time-2.9.3.jar to DistributedCache through /tmp/temp561788424/tmp121402994/joda-time-2.9.3.jar
+2023-04-24 07:22:18,828 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting up single store job
+2023-04-24 07:22:18,846 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Key [pig.schematuple] is false, will not generate code.
+2023-04-24 07:22:18,847 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Starting process to move generated code to distributed cacche
+2023-04-24 07:22:18,847 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Setting key [pig.schematuple.classes] with classes to deserialize []
+2023-04-24 07:22:18,914 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 1 map-reduce job(s) waiting for submission.
+2023-04-24 07:22:18,928 [JobControl] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:22:18,949 [JobControl] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.task.id is deprecated. Instead, use mapreduce.task.attempt.id
+2023-04-24 07:22:19,102 [JobControl] INFO  org.apache.hadoop.mapreduce.JobResourceUploader - Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/root/.staging/job_1682315757916_0003
+2023-04-24 07:22:19,123 [JobControl] WARN  org.apache.hadoop.mapreduce.JobResourceUploader - No job jar file set.  User classes may not be found. See Job or Job#setJar(String).
+2023-04-24 07:22:19,171 [JobControl] INFO  org.apache.pig.builtin.PigStorage - Using PigTextInputFormat
+2023-04-24 07:22:19,258 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input files to process : 3
+2023-04-24 07:22:19,258 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 3
+2023-04-24 07:22:19,276 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2023-04-24 07:22:19,364 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - number of splits:1
+2023-04-24 07:22:19,504 [JobControl] INFO  org.apache.hadoop.conf.Configuration.deprecation - yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+2023-04-24 07:22:19,648 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Submitting tokens for job: job_1682315757916_0003
+2023-04-24 07:22:19,649 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Executing with tokens: []
+2023-04-24 07:22:19,819 [JobControl] INFO  org.apache.hadoop.mapred.YARNRunner - Job jar is not present. Not adding any jar to the list of resources.
+2023-04-24 07:22:19,927 [JobControl] INFO  org.apache.hadoop.conf.Configuration - resource-types.xml not found
+2023-04-24 07:22:19,928 [JobControl] INFO  org.apache.hadoop.yarn.util.resource.ResourceUtils - Unable to find 'resource-types.xml'.
+2023-04-24 07:22:20,016 [JobControl] INFO  org.apache.hadoop.yarn.client.api.impl.YarnClientImpl - Submitted application application_1682315757916_0003
+2023-04-24 07:22:20,074 [JobControl] INFO  org.apache.hadoop.mapreduce.Job - The url to track the job: http://6cb55f31383b:8088/proxy/application_1682315757916_0003/
+2023-04-24 07:22:20,075 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - HadoopJobId: job_1682315757916_0003
+2023-04-24 07:22:20,075 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Processing aliases inputDialouges
+2023-04-24 07:22:20,075 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - detailed locations: M: inputDialouges[2,17],inputDialouges[-1,-1] C:  R:
+2023-04-24 07:22:20,086 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 0% complete
+2023-04-24 07:22:20,086 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1682315757916_0003]
+2023-04-24 07:22:32,148 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 12% complete
+2023-04-24 07:22:32,148 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1682315757916_0003]
+2023-04-24 07:22:35,151 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 25% complete
+2023-04-24 07:22:35,157 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:22:35,162 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:22:36,164 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:22:36,170 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:22:36,192 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.reduce.tasks is deprecated. Instead, use mapreduce.job.reduces
+2023-04-24 07:22:36,196 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:22:36,201 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:22:36,265 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:22:36,270 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:22:36,316 [main] INFO  org.apache.pig.tools.pigstats.mapreduce.MRScriptState - Pig script settings are added to the job2023-04-24 07:22:36,318 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - mapred.job.reduce.markreset.buffer.percent is not set, set to default 0.3
+2023-04-24 07:22:36,319 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Reduce phase detected, estimating # of required reducers.
+2023-04-24 07:22:36,321 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Using reducer estimator: org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.InputSizeReducerEstimator
+2023-04-24 07:22:36,334 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.InputSizeReducerEstimator - BytesPerReducer=1000000000 maxReducers=999 totalInputFileSize=191428
+2023-04-24 07:22:36,334 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting Parallelism to 1
+2023-04-24 07:22:36,334 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - This job cannot be converted run in-process
+2023-04-24 07:22:36,392 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/pig-0.17.0-core-h2.jar to DistributedCache through /tmp/temp561788424/tmp-778293191/pig-0.17.0-core-h2.jar
+2023-04-24 07:22:36,824 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/automaton-1.11-8.jar to DistributedCache through /tmp/temp561788424/tmp231606247/automaton-1.11-8.jar
+2023-04-24 07:22:36,848 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/antlr-runtime-3.4.jar to DistributedCache through /tmp/temp561788424/tmp656629460/antlr-runtime-3.4.jar
+2023-04-24 07:22:37,276 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/joda-time-2.9.3.jar to DistributedCache through /tmp/temp561788424/tmp1425905010/joda-time-2.9.3.jar
+2023-04-24 07:22:37,278 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting up single store job
+2023-04-24 07:22:37,279 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Key [pig.schematuple] is false, will not generate code.
+2023-04-24 07:22:37,279 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Starting process to move generated code to distributed cacche
+2023-04-24 07:22:37,279 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Setting key [pig.schematuple.classes] with classes to deserialize []
+2023-04-24 07:22:37,325 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 1 map-reduce job(s) waiting for submission.
+2023-04-24 07:22:37,329 [JobControl] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:22:37,333 [JobControl] INFO  org.apache.hadoop.conf.Configuration.deprecation - yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+2023-04-24 07:22:37,346 [JobControl] INFO  org.apache.hadoop.mapreduce.JobResourceUploader - Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/root/.staging/job_1682315757916_0004
+2023-04-24 07:22:37,350 [JobControl] WARN  org.apache.hadoop.mapreduce.JobResourceUploader - No job jar file set.  User classes may not be found. See Job or Job#setJar(String).
+2023-04-24 07:22:37,370 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input files to process : 1
+2023-04-24 07:22:37,371 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+2023-04-24 07:22:37,371 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2023-04-24 07:22:37,409 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - number of splits:1
+2023-04-24 07:22:37,449 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Submitting tokens for job: job_1682315757916_0004
+2023-04-24 07:22:37,449 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Executing with tokens: []
+2023-04-24 07:22:37,454 [JobControl] INFO  org.apache.hadoop.mapred.YARNRunner - Job jar is not present. Not adding any jar to the list of resources.
+2023-04-24 07:22:37,691 [JobControl] INFO  org.apache.hadoop.yarn.client.api.impl.YarnClientImpl - Submitted application application_1682315757916_0004
+2023-04-24 07:22:37,697 [JobControl] INFO  org.apache.hadoop.mapreduce.Job - The url to track the job: http://6cb55f31383b:8088/proxy/application_1682315757916_0004/
+2023-04-24 07:22:37,827 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - HadoopJobId: job_1682315757916_0004
+2023-04-24 07:22:37,827 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Processing aliases OnlyDialouges,groupByName,names
+2023-04-24 07:22:37,827 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - detailed locations: M: OnlyDialouges[5,16],names[9,8],groupByName[7,14] C: names[9,8],groupByName[7,14] R: names[9,8]
+2023-04-24 07:22:51,982 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 37% complete
+2023-04-24 07:22:51,982 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1682315757916_0004]
+2023-04-24 07:23:00,031 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 50% complete
+2023-04-24 07:23:00,032 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1682315757916_0004]
+2023-04-24 07:23:03,042 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:03,051 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:03,121 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:03,127 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:03,152 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:03,158 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:03,182 [main] INFO  org.apache.pig.tools.pigstats.mapreduce.MRScriptState - Pig script settings are added to the job2023-04-24 07:23:03,183 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - mapred.job.reduce.markreset.buffer.percent is not set, set to default 0.3
+2023-04-24 07:23:03,185 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Reduce phase detected, estimating # of required reducers.
+2023-04-24 07:23:03,185 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Using reducer estimator: org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.InputSizeReducerEstimator
+2023-04-24 07:23:03,192 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.InputSizeReducerEstimator - BytesPerReducer=1000000000 maxReducers=999 totalInputFileSize=4983
+2023-04-24 07:23:03,194 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting Parallelism to 1
+2023-04-24 07:23:03,194 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - This job cannot be converted run in-process
+2023-04-24 07:23:03,231 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/pig-0.17.0-core-h2.jar to DistributedCache through /tmp/temp561788424/tmp2104659707/pig-0.17.0-core-h2.jar
+2023-04-24 07:23:03,254 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/automaton-1.11-8.jar to DistributedCache through /tmp/temp561788424/tmp-953236730/automaton-1.11-8.jar
+2023-04-24 07:23:03,274 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/antlr-runtime-3.4.jar to DistributedCache through /tmp/temp561788424/tmp7238799/antlr-runtime-3.4.jar
+2023-04-24 07:23:03,298 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/joda-time-2.9.3.jar to DistributedCache through /tmp/temp561788424/tmp-1668927720/joda-time-2.9.3.jar
+2023-04-24 07:23:03,300 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting up single store job
+2023-04-24 07:23:03,300 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Key [pig.schematuple] is false, will not generate code.
+2023-04-24 07:23:03,300 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Starting process to move generated code to distributed cacche
+2023-04-24 07:23:03,301 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Setting key [pig.schematuple.classes] with classes to deserialize []
+2023-04-24 07:23:03,322 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 1 map-reduce job(s) waiting for submission.
+2023-04-24 07:23:03,331 [JobControl] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:03,336 [JobControl] INFO  org.apache.hadoop.conf.Configuration.deprecation - yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+2023-04-24 07:23:03,355 [JobControl] INFO  org.apache.hadoop.mapreduce.JobResourceUploader - Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/root/.staging/job_1682315757916_0005
+2023-04-24 07:23:03,360 [JobControl] WARN  org.apache.hadoop.mapreduce.JobResourceUploader - No job jar file set.  User classes may not be found. See Job or Job#setJar(String).
+2023-04-24 07:23:03,380 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input files to process : 1
+2023-04-24 07:23:03,381 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+2023-04-24 07:23:03,381 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2023-04-24 07:23:03,425 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - number of splits:1
+2023-04-24 07:23:03,455 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Submitting tokens for job: job_1682315757916_0005
+2023-04-24 07:23:03,456 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Executing with tokens: []
+2023-04-24 07:23:03,461 [JobControl] INFO  org.apache.hadoop.mapred.YARNRunner - Job jar is not present. Not adding any jar to the list of resources.
+2023-04-24 07:23:03,501 [JobControl] INFO  org.apache.hadoop.yarn.client.api.impl.YarnClientImpl - Submitted application application_1682315757916_0005
+2023-04-24 07:23:03,507 [JobControl] INFO  org.apache.hadoop.mapreduce.Job - The url to track the job: http://6cb55f31383b:8088/proxy/application_1682315757916_0005/
+2023-04-24 07:23:03,827 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - HadoopJobId: job_1682315757916_0005
+2023-04-24 07:23:03,827 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Processing aliases namesOrdered
+2023-04-24 07:23:03,827 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - detailed locations: M: namesOrdered[10,15] C:  R:
+2023-04-24 07:23:17,885 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 62% complete
+2023-04-24 07:23:17,885 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1682315757916_0005]
+2023-04-24 07:23:22,895 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 75% complete
+2023-04-24 07:23:22,895 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1682315757916_0005]
+2023-04-24 07:23:23,900 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:23,907 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:23,976 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:23,981 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:24,003 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:24,006 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:24,047 [main] INFO  org.apache.pig.tools.pigstats.mapreduce.MRScriptState - Pig script settings are added to the job2023-04-24 07:23:24,048 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - mapred.job.reduce.markreset.buffer.percent is not set, set to default 0.3
+2023-04-24 07:23:24,048 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Reduce phase detected, estimating # of required reducers.
+2023-04-24 07:23:24,048 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting Parallelism to 1
+2023-04-24 07:23:24,049 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - This job cannot be converted run in-process
+2023-04-24 07:23:24,492 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/pig-0.17.0-core-h2.jar to DistributedCache through /tmp/temp561788424/tmp-92810542/pig-0.17.0-core-h2.jar
+2023-04-24 07:23:24,516 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/automaton-1.11-8.jar to DistributedCache through /tmp/temp561788424/tmp185193983/automaton-1.11-8.jar
+2023-04-24 07:23:24,540 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/antlr-runtime-3.4.jar to DistributedCache through /tmp/temp561788424/tmp1379861175/antlr-runtime-3.4.jar
+2023-04-24 07:23:24,561 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Added jar file:/usr/local/pig-0.17.0/lib/joda-time-2.9.3.jar to DistributedCache through /tmp/temp561788424/tmp-1326996154/joda-time-2.9.3.jar
+2023-04-24 07:23:24,563 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting up single store job
+2023-04-24 07:23:24,563 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Key [pig.schematuple] is false, will not generate code.
+2023-04-24 07:23:24,563 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Starting process to move generated code to distributed cacche
+2023-04-24 07:23:24,563 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Setting key [pig.schematuple.classes] with classes to deserialize []
+2023-04-24 07:23:24,585 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 1 map-reduce job(s) waiting for submission.
+2023-04-24 07:23:24,591 [JobControl] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:24,600 [JobControl] INFO  org.apache.hadoop.conf.Configuration.deprecation - yarn.resourcemanager.system-metrics-publisher.enabled is deprecated. Instead, use yarn.system-metrics-publisher.enabled
+2023-04-24 07:23:24,615 [JobControl] INFO  org.apache.hadoop.mapreduce.JobResourceUploader - Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/root/.staging/job_1682315757916_0006
+2023-04-24 07:23:24,618 [JobControl] WARN  org.apache.hadoop.mapreduce.JobResourceUploader - No job jar file set.  User classes may not be found. See Job or Job#setJar(String).
+2023-04-24 07:23:24,651 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input files to process : 1
+2023-04-24 07:23:24,651 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+2023-04-24 07:23:24,651 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+2023-04-24 07:23:24,702 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - number of splits:1
+2023-04-24 07:23:24,741 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Submitting tokens for job: job_1682315757916_0006
+2023-04-24 07:23:24,741 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Executing with tokens: []
+2023-04-24 07:23:24,746 [JobControl] INFO  org.apache.hadoop.mapred.YARNRunner - Job jar is not present. Not adding any jar to the list of resources.
+2023-04-24 07:23:24,989 [JobControl] INFO  org.apache.hadoop.yarn.client.api.impl.YarnClientImpl - Submitted application application_1682315757916_0006
+2023-04-24 07:23:24,997 [JobControl] INFO  org.apache.hadoop.mapreduce.Job - The url to track the job: http://6cb55f31383b:8088/proxy/application_1682315757916_0006/
+2023-04-24 07:23:25,087 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - HadoopJobId: job_1682315757916_0006
+2023-04-24 07:23:25,087 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Processing aliases namesOrdered
+2023-04-24 07:23:25,087 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - detailed locations: M: namesOrdered[10,15] C:  R:
+2023-04-24 07:23:42,203 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 87% complete
+2023-04-24 07:23:42,203 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1682315757916_0006]
+2023-04-24 07:23:49,226 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Running jobs are [job_1682315757916_0006]
+2023-04-24 07:23:55,239 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,246 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,309 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,315 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,341 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,348 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,381 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 100% complete
+2023-04-24 07:23:55,407 [main] INFO  org.apache.pig.tools.pigstats.mapreduce.SimplePigStats - Script Statistics:
+
+HadoopVersion   PigVersion      UserId  StartedAt       FinishedAt      Features
+3.3.1   0.17.0  root    2023-04-24 07:22:17     2023-04-24 07:23:55     GROUP_BY,ORDER_BY,RANK,FILTER
+
+Success!
+
+Job Stats (time in seconds):
+JobId   Maps    Reduces MaxMapTime      MinMapTime      AvgMapTime      MedianMapTime   MaxReduceTime   MinReduceTime   AvgReduceTimMedianReducetime Alias   Feature Outputs
+job_1682315757916_0003  1       0       3       3       3       3       0       0       0       0       inputDialouges  MAP_ONLY
+job_1682315757916_0004  1       1       4       4       4       4       4       4       4       4       OnlyDialouges,groupByName,names      GROUP_BY,COMBINER
+job_1682315757916_0005  1       1       2       2       2       2       2       2       2       2       namesOrdered    SAMPLER
+job_1682315757916_0006  1       1       3       3       3       3       4       4       4       4       namesOrdered    ORDER_BY    hdfs:///projActicity/output,
+
+Input(s):
+Successfully read 2529 records (161771 bytes) from: "hdfs:///projActicity"
+
+Output(s):
+Successfully stored 224 records (3806 bytes) in: "hdfs:///projActicity/output"
+
+Counters:
+Total records written : 224
+Total bytes written : 3806
+Spillable Memory Manager spill count : 0
+Total bags proactively spilled: 0
+Total records proactively spilled: 0
+
+Job DAG:
+job_1682315757916_0003  ->      job_1682315757916_0004,
+job_1682315757916_0004  ->      job_1682315757916_0005,
+job_1682315757916_0005  ->      job_1682315757916_0006,
+job_1682315757916_0006
+
+
+2023-04-24 07:23:55,410 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,416 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,440 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,446 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,474 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,479 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,509 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,514 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,546 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,552 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,584 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,587 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,619 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,623 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,656 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,661 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,697 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,704 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,736 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,740 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,773 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,778 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,818 [main] INFO  org.apache.hadoop.yarn.client.DefaultNoHARMFailoverProxyProvider - Connecting to ResourceManager at /0.0.0.0:8032
+2023-04-24 07:23:55,823 [main] INFO  org.apache.hadoop.mapred.ClientServiceDelegate - Application state is completed. FinalApplicationStatus=SUCCEEDED. Redirecting to job history server
+2023-04-24 07:23:55,859 [main] WARN  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Encountered Warning ACCESSING_NON_EXISTENT_FIELD 6 time(s).
+2023-04-24 07:23:55,859 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Success!
+2023-04-24 07:23:55,900 [main] INFO  org.apache.pig.Main - Pig script completed in 1 minute, 40 seconds and 19 milliseconds (100019 ms)
+root@6cb55f31383b:/#
+root@6cb55f31383b:/# hdfs dfs -ls /proj*
+Found 4 items
+-rw-r--r--   1 root supergroup      67671 2023-04-24 06:08 /projActicity/episodeIV_dialouges.txt
+-rw-r--r--   1 root supergroup      43658 2023-04-24 06:08 /projActicity/episodeVI_dialouges.txt
+-rw-r--r--   1 root supergroup      49891 2023-04-24 06:08 /projActicity/episodeV_dialouges.txt
+drwxr-xr-x   - root supergroup          0 2023-04-24 07:23 /projActicity/output
+root@6cb55f31383b:/# hdfs dfs -ls /projActicity/output
+Found 2 items
+-rw-r--r--   1 root supergroup          0 2023-04-24 07:23 /projActicity/output/_SUCCESS
+-rw-r--r--   1 root supergroup       3806 2023-04-24 07:23 /projActicity/output/part-r-00000
+root@6cb55f31383b:/# hdfs dfs -cat /projActicity/output/part-r-00000
+LUKE    481
+HAN     438
+THREEPIO        295
+LEIA    222
+VADER   134
+BEN     101
+LANDO   96
+YODA    46
+EMPEROR 36
+RED LEADER      36
+BIGGS   34
+WEDGE   32
+PIETT   29
+TARKIN  28
+OWEN    25
+CREATURE        22
+TROOPER 19
+JABBA (in Huttese subtitled)    15
+GOLD LEADER     14
+RIEEKAN 13
+OFFICER 13
+ACKBAR  11
+BEN'S VOICE     10
+COMMANDER       10
+JABBA   10
+INTERCOM VOICE  8
+VEERS   7
+RED TEN 7
+DECK OFFICER    7
+GOLD FIVE       7
+AUNT BERU       6
+JERJERROD       6
+FIRST TROOPER   6
+DEATH STAR INTERCOM VOICE       6
+GREEDO  6
+DODONNA 6
+ZEV     6
+BOUSHH  5
+STORMTROOPER    5
+BIB     5
+OZZEL   5
+NEEDA   5
+CONTROLLER      5
+NINEDENINE      5
+IMPERIAL OFFICER        4
+HUMAN   4
+MOTTI   4
+TAGGE   4
+JANSON  4
+BOBA FETT       4
+DACK    4
+BARTENDER       3
+ANNOUNCER       3
+SECOND TROOPER  3
+MASSASSI INTERCOM VOICE 3
+REBEL PILOT     3
+DERLIN  3
+VOICE   3
+TRENCH OFFICER  3
+HAN (cont)      3
+        2
+BOUSHH (in Ubese subtitled)     2
+CONTROLLER (over radio) 2
+COMMUNICATIONS OFFICER  2
+SENIOR CONTROLLER       2
+TRACKING OFFICER        2
+SHUTTLE CAPTAIN 2
+SECOND OFFICER  2
+GENERAL MADINE  2
+GANTRY OFFICER  2
+STRANGE VOICE   2
+MEDICAL DROID   2
+MAN'S VOICE     2
+ACKBAR (VO)     2
+MON MOTHMA      2
+LIEUTENANT      2
+SCOUT #1        2
+GOLD TWO        2
+WILLARD 2
+CAPTAIN 2
+PILOT   2
+GUARD   2
+FIXER   2
+CHIEF   2
+CAMIE   2
+LANDO (smiling) 1
+HEAD CONTROLLER 1
+HAN (sarcastic) 1
+EMPEROR (angry) 1
+CONTROL OFFICER 1
+MON MOTHMA (cont)       1
+PIETT (surprised)       1
+STAR WARS - EPISODE 6: RETURN OF THE JEDI       1
+LUKE (to Leia)  1
+LEIA (alarmed)  1
+SECOND CONTROLLER       1
+HAN/PILOT (VO)  1
+HAN (chuckles)  1
+HAN (blinking)  1
+BEN (attempting to give solace with his words)  1
+STAR WARS - EPISODE 5: THE EMPIRE STRIKES BACK  1
+EMPEROR (cont)  1
+TROOPER VOICE   1
+HAN (to Leia)   1
+REBEL OFFICER   1
+REBEL FIGHTER   1
+REBEL CAPTAIN   1
+LUKE (indicating the one ahead) 1
+LUKE (groans)   1
+LEIA (to Han)   1
+LEIA (softly)   1
+HAN (to Luke)   1
+STORMTROOPER (OS)       1
+HAN (gravely)   1
+VADER (a whisper)       1
+FIRST OFFICER   1
+ASTRO-OFFICER   1
+ACKBAR (cont)   1
+Y-WING PILOT    1
+VADER (bows)    1
+VADER (skeptical)       1
+OFFICER CASS    1
+LUKE'S VOICE    1
+HAN and LUKE    1
+HAN (smiles)    1
+GREEN LEADER    1
+ANAKIN (very weak)      1
+EMPEROR (laughing)      1
+LUKE (pointing to the controls) 1
+LUKE (cont)     1
+HAN'S VOICE     1
+HAN (sighs)     1
+HAN (grins)     1
+HAN (angry)     1
+GRAY LEADER     1
+EMPEROR (to Vader)      1
+CHIEF PILOT     1
+HAN (over comlink)      1
+NINEDENINE (to a Gamorrean guard)       1
+WEDGE (VO)      1
+VOICE (OS)      1
+TECHNICIAN      1
+JERJERROD (aghast)      1
+RED ELEVEN      1
+LANDO (to himself)      1
+OOLA    1
+LURE    1
+RED LEADER'S VOICE      1
+EMPEROR (very cool)     1
+BASE VOICE      1
+RED THREE       1
+RED SEVEN       1
+NAVIGATOR       1
+LANDO (desperately)     1
+LEIA (into comlink)     1
+LEIA (over comlink)     1
+LUKE (with sadness)     1
+THREEPIO (to Artoo)     1
+LANDO (into comlink)    1
+LANDO (over comlink)    1
+PIETT (into comlink)    1
+SCOUT #l        1
+SCOUT #2        1
+YODA (gathering all his strength)       1
+RED NINE        1
+PILOT #2        1
+OPERATOR        1
+HAN (OS)        1
+DEATH STAR CONTROLLER(filtered VO)      1
+THREEPIO (instantly)    1
+BEN (OS)        1
+WINGMAN 1
+DEAK    1
+THREEPIO (to Wicket)    1
+VADER (after a beat)    1
+RED TWO 1
+CONTROLLER (filtered)   1
+PORKINS 1
+EMPEROR (no surprise)   1
+HAN (turning to Luke)   1
+CONTROL ROOM COMMANDER  1
+BEN (grinning at Luke's indignation)    1
+HAN (loses his temper)  1
+PILOTS  1
+YODA (shakes his head)  1
+HOBBIE  1
+LUKE (shrugging it off) 1
+THREEPIO (disappearing) 1
+THREEPIO (still shaken) 1
+ANAKIN  1
+YODA (tickled, chuckles)        1
+WOMAN   1
+HAN (looks at him warmly)       1
+LUKE (moving to his ship)       1
+BIB (in Huttese subtitled)      1
+HAN (whispering to himself)     1
+PILOT VOICE (HAN)(filtered)     1
+SCOUT   1
+BERU    1
+VADER (turning to face him)     1
+LUKE (turning away, derisive)   1
+VADER (indicating lightsaber)   1
+BEN (continuing his narrative)  1
+HAN (with self-confident grin)  1
+ASSISTANT OFFICER       1
+WOMAN CONTROLLER        1
+JABBA (cont Huttese subtitled)  1
+SECOND COMMANDER        1
+RED NINE'S VOICE        1
+LUKE (sarcastic)        1
+LUKE (concerned)        1
+IMPERIAL SOLDIER        1
+EMPEROR (to Luke)       1
+FIRST CONTROLLER        1
+EMPEROR (laughs)        1
+BUNKER COMMANDER        1
+WINGMAN'S VOICE 1
+WALKER PILOT #1 1
+THREEPIO (cont) 1
+VOICE OVER DEATH STAR INTERCOM  1
+SECOND THREEPIO 1
+RED TEN'S VOICE 1
+RED LEADER (VO) 1
+LUKE (hesitant) 1
+root@6cb55f31383b:/#
+root@6cb55f31383b:/#
+root@6cb55f31383b:/# pwd
+/
+root@6cb55f31383b:/# ls
+EmpData.csv  dev                      etc         lib64         output.csv             run           sys          wordcount.pig
+bin          diagCount.pig            export      media         pig_1681370295850.log  sales.csv     tmp          zipcodes.csv
+boot         episodeIV_dialouges.txt  file01.txt  metastore_db  pig_1682319010734.log  salesCSV.pig  txtFile.txt
+csvFile.csv  episodeVI_dialouges.txt  home        mnt           proc                   sbin          usr
+derby.log    episodeV_dialouges.txt   lib         opt           root                   srv           var
+root@6cb55f31383b:/#
+
+
