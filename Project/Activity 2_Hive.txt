@@ -1,0 +1,92 @@
+root@6cb55f31383b:/# hive
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop-3.3.1/share/hadoop/common/lib/slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Hive Session ID = faee2681-853f-439a-8f86-aa3ae7a99dcc
+
+Logging initialized using configuration in jar:file:/usr/local/apache-hive-3.1.2-bin/lib/hive-common-3.1.2.jar!/hive-log4j2.properties Async: true
+Hive Session ID = 9ab6432e-384e-4708-9fb2-e6a5a7f800d6
+Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+hive> show databases;
+OK
+default
+inputdiag
+office
+projactv2
+Time taken: 0.658 seconds, Fetched: 4 row(s)
+hive> use projactv2;
+OK
+Time taken: 0.058 seconds
+hive> CREATE TABLE epIVdiag
+    > (charName STRING, diag STRING)
+    > ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+    > TBLPROPERTIES ("skip.header.line.count"="2");
+OK
+Time taken: 0.609 seconds
+hive> LOAD DATA LOCAL INPATH
+    > '/episodeIV_dialouges.txt'
+    > INTO TABLE inputdiag;
+FAILED: SemanticException [Error 10001]: Line 3:11 Table not found 'inputdiag'
+hive>
+    > LOAD DATA LOCAL INPATH
+    > '/episodeIV_dialouges.txt'
+    >  INTO TABLE epIVdiag;
+Loading data to table projactv2.epivdiag
+OK
+Time taken: 0.667 seconds
+
+hive> SELECT COUNT(*) FROM epIVdiag;
+Query ID = root_20230424165352_6685b9bf-58fa-49a1-8f1f-4f1b76309636
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1682315757916_0017, Tracking URL = http://6cb55f31383b:8088/proxy/application_1682315757916_0017/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1682315757916_0017
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-04-24 16:54:03,572 Stage-1 map = 0%,  reduce = 0%
+2023-04-24 16:54:07,739 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.31 sec
+2023-04-24 16:54:12,951 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 4.77 sec
+MapReduce Total cumulative CPU time: 4 seconds 770 msec
+Ended Job = job_1682315757916_0017
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 4.77 sec   HDFS Read: 79879 HDFS Write: 104 SUCCESS
+Total MapReduce CPU Time Spent: 4 seconds 770 msec
+OK
+1010
+Time taken: 21.669 seconds, Fetched: 1 row(s)
+hive>
+    >
+    > SELECT COUNT(*) FROM epIVdiag WHERE INSTR(diag,'Luke')>0;
+Query ID = root_20230424165516_55ab86d6-86df-4ba7-9f44-f779fa1f612b
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1682315757916_0018, Tracking URL = http://6cb55f31383b:8088/proxy/application_1682315757916_0018/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1682315757916_0018
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-04-24 16:55:23,108 Stage-1 map = 0%,  reduce = 0%
+2023-04-24 16:55:29,298 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.92 sec
+2023-04-24 16:55:34,455 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 5.43 sec
+MapReduce Total cumulative CPU time: 5 seconds 430 msec
+Ended Job = job_1682315757916_0018
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 5.43 sec   HDFS Read: 81991 HDFS Write: 102 SUCCESS
+Total MapReduce CPU Time Spent: 5 seconds 430 msec
+OK
+56
+Time taken: 18.933 seconds, Fetched: 1 row(s)
+hive>
