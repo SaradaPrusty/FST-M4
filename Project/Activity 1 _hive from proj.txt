@@ -1,0 +1,1074 @@
+
+PS C:\Users\06680T744> docker exec -it 6cb55f31383bd83e66ba8605e5e640ed22a00b896a39eeb5fb4dddaae568cf92 bash
+root@6cb55f31383b:/# ls
+EmpData.csv  dev                      etc         lib64         output.csv             root          srv          var
+bin          diagCount.pig            export      media         part-r-00000           run           sys          wordcount.pig
+boot         episodeIV_dialouges.txt  file01.txt  metastore_db  pig_1681370295850.log  sales.csv     tmp          zipcodes.csv
+csvFile.csv  episodeVI_dialouges.txt  home        mnt           pig_1682319010734.log  salesCSV.pig  txtFile.txt
+derby.log    episodeV_dialouges.txt   lib         opt           proc                   sbin          usr
+root@6cb55f31383b:/# hive
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/apache-hive-3.1.2-bin/lib/log4j-slf4j-impl-2.10.0.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop-3.3.1/share/hadoop/common/lib/slf4j-log4j12-1.7.30.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+Hive Session ID = 5bfda755-a2df-4e89-ac79-45c2f00d8772
+
+Logging initialized using configuration in jar:file:/usr/local/apache-hive-3.1.2-bin/lib/hive-common-3.1.2.jar!/hive-log4j2.properties Async: true
+Hive Session ID = 9ef6afe7-ae2c-489d-864b-05498e0a2275
+Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+hive> show databases
+    > ;
+OK
+default
+office
+Time taken: 0.668 seconds, Fetched: 2 row(s)
+hive> create database inputdiag;
+OK
+Time taken: 0.209 seconds
+hive> use inputdiag
+    > ;
+OK
+Time taken: 0.024 seconds
+hive> CREATE TABLE inputdiag
+    > (charName STRING, diag STRING)
+    > ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+    > TBLPROPERTIES ("skip.header.line.count"="2");
+OK
+Time taken: 0.532 seconds
+hive> describe inputdiag;
+OK
+charname                string
+diag                    string
+Time taken: 0.189 seconds, Fetched: 2 row(s)
+hive> LOAD DATA LOCAL INPATH
+    > '/episodeIV_dialouges.txt'
+    > INTO TABLE inputdiag;
+Loading data to table inputdiag.inputdiag
+OK
+Time taken: 0.436 seconds
+
+hive>
+    >
+    > select charname, COUNT(*) FROM inputdiag group by charname;
+Query ID = root_20230424113039_db746a5a-8b68-403f-9164-fb480742d248
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1682315757916_0008, Tracking URL = http://6cb55f31383b:8088/proxy/application_1682315757916_0008/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1682315757916_0008
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-04-24 11:30:44,740 Stage-1 map = 0%,  reduce = 0%
+2023-04-24 11:30:49,917 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 3.53 sec
+2023-04-24 11:30:56,105 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 6.67 sec
+MapReduce Total cumulative CPU time: 6 seconds 670 msec
+Ended Job = job_1682315757916_0008
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 6.67 sec   HDFS Read: 80573 HDFS Write: 1753 SUCCESS
+Total MapReduce CPU Time Spent: 6 seconds 670 msec
+OK
+ASTRO-OFFICER   1
+AUNT BERU       6
+BARTENDER       3
+BASE VOICE      1
+BEN     76
+BEN'S VOICE     6
+BERU    1
+BIGGS   34
+CAMIE   2
+CAPTAIN 1
+CHIEF   2
+CHIEF PILOT     1
+COMMANDER       3
+CONTROL OFFICER 1
+CREATURE        1
+DEAK    1
+DEATH STAR INTERCOM VOICE       6
+DODONNA 6
+FIRST OFFICER   1
+FIRST TROOPER   6
+FIXER   2
+GANTRY OFFICER  2
+GOLD FIVE       7
+GOLD LEADER     14
+GOLD TWO        2
+GREEDO  6
+HAN     152
+HAN'S VOICE     1
+HUMAN   4
+IMPERIAL OFFICER        2
+INTERCOM VOICE  6
+JABBA   6
+LEIA    57
+LUKE    253
+LUKE'S VOICE    1
+MAN'S VOICE     1
+MASSASSI INTERCOM VOICE 3
+MOTTI   4
+OFFICER 11
+OFFICER CASS    1
+OWEN    25
+PORKINS 1
+REBEL OFFICER   1
+RED ELEVEN      1
+RED LEADER      36
+RED LEADER'S VOICE      1
+RED NINE        1
+RED NINE'S VOICE        1
+RED SEVEN       1
+RED TEN 7
+RED TEN'S VOICE 1
+SECOND OFFICER  1
+SECOND TROOPER  3
+TAGGE   4
+TARKIN  28
+TECHNICIAN      1
+THREEPIO        119
+TROOPER 19
+TROOPER VOICE   1
+VADER   41
+VOICE   3
+VOICE OVER DEATH STAR INTERCOM  1
+WEDGE   14
+WILLARD 2
+WINGMAN 1
+WINGMAN'S VOICE 1
+WOMAN   1
+
+hive> select charname, COUNT(*) as numofdiag  FROM inputdiag group by charname order by numofdiag desc;
+Query ID = root_20230424113355_95cbf86a-3d48-46c3-9f1f-9844c74b10b3
+Total jobs = 2
+Launching Job 1 out of 2
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1682315757916_0010, Tracking URL = http://6cb55f31383b:8088/proxy/application_1682315757916_0010/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1682315757916_0010
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-04-24 11:34:02,448 Stage-1 map = 0%,  reduce = 0%
+2023-04-24 11:34:07,663 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 3.2 sec
+2023-04-24 11:34:12,803 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 5.92 sec
+MapReduce Total cumulative CPU time: 5 seconds 920 msec
+Ended Job = job_1682315757916_0010
+Launching Job 2 out of 2
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1682315757916_0011, Tracking URL = http://6cb55f31383b:8088/proxy/application_1682315757916_0011/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1682315757916_0011
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2023-04-24 11:34:27,397 Stage-2 map = 0%,  reduce = 0%
+2023-04-24 11:34:31,569 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 1.81 sec
+2023-04-24 11:34:36,702 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 4.64 sec
+MapReduce Total cumulative CPU time: 4 seconds 640 msec
+Ended Job = job_1682315757916_0011
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 5.92 sec   HDFS Read: 79702 HDFS Write: 2015 SUCCESS
+Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 4.64 sec   HDFS Read: 9477 HDFS Write: 1753 SUCCESS
+Total MapReduce CPU Time Spent: 10 seconds 560 msec
+OK
+LUKE    253
+HAN     152
+THREEPIO        119
+BEN     76
+LEIA    57
+VADER   41
+RED LEADER      36
+BIGGS   34
+TARKIN  28
+OWEN    25
+TROOPER 19
+GOLD LEADER     14
+WEDGE   14
+OFFICER 11
+RED TEN 7
+GOLD FIVE       7
+DODONNA 6
+DEATH STAR INTERCOM VOICE       6
+INTERCOM VOICE  6
+GREEDO  6
+FIRST TROOPER   6
+AUNT BERU       6
+BEN'S VOICE     6
+JABBA   6
+HUMAN   4
+TAGGE   4
+MOTTI   4
+VOICE   3
+SECOND TROOPER  3
+MASSASSI INTERCOM VOICE 3
+COMMANDER       3
+BARTENDER       3
+CAMIE   2
+CHIEF   2
+WILLARD 2
+FIXER   2
+GANTRY OFFICER  2
+GOLD TWO        2
+IMPERIAL OFFICER        2
+WOMAN   1
+WINGMAN'S VOICE 1
+WINGMAN 1
+VOICE OVER DEATH STAR INTERCOM  1
+TROOPER VOICE   1
+TECHNICIAN      1
+SECOND OFFICER  1
+RED TEN'S VOICE 1
+RED SEVEN       1
+RED NINE'S VOICE        1
+RED NINE        1
+RED LEADER'S VOICE      1
+RED ELEVEN      1
+REBEL OFFICER   1
+PORKINS 1
+OFFICER CASS    1
+MAN'S VOICE     1
+LUKE'S VOICE    1
+HAN'S VOICE     1
+FIRST OFFICER   1
+DEAK    1
+CREATURE        1
+CONTROL OFFICER 1
+CHIEF PILOT     1
+CAPTAIN 1
+BERU    1
+BASE VOICE      1
+ASTRO-OFFICER   1
+Time taken: 43.178 seconds, Fetched: 67 row(s)
+
+
+=======================================
+
+hive> LOAD DATA LOCAL INPATH
+    > '/episodeV_dialouges.txt'
+    > INTO TABLE inputdiag;
+Loading data to table inputdiag.inputdiag
+OK
+Time taken: 0.272 seconds
+hive>
+    >
+    > describe inputdiag;
+OK
+charname                string
+diag                    string
+Time taken: 0.034 seconds, Fetched: 2 row(s)
+hive> LOAD DATA LOCAL INPATH
+    > '/episodeVI_dialouges.txt'
+    >  INTO TABLE inputdiag;
+Loading data to table inputdiag.inputdiag
+OK
+Time taken: 0.115 seconds
+hive>
+    >
+	
+	
+	hive>
+    >
+    > select charname, COUNT(*) as numofdiag  FROM inputdiag group by charname order by numofdiag desc;
+Query ID = root_20230424114620_dd4f0842-607c-4367-b102-6f9ce36a1d10
+Total jobs = 2
+Launching Job 1 out of 2
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1682315757916_0013, Tracking URL = http://6cb55f31383b:8088/proxy/application_1682315757916_0013/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1682315757916_0013
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-04-24 11:46:27,038 Stage-1 map = 0%,  reduce = 0%
+2023-04-24 11:46:32,181 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.74 sec
+2023-04-24 11:46:38,319 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 4.96 sec
+MapReduce Total cumulative CPU time: 4 seconds 960 msec
+Ended Job = job_1682315757916_0013
+Launching Job 2 out of 2
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1682315757916_0014, Tracking URL = http://6cb55f31383b:8088/proxy/application_1682315757916_0014/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1682315757916_0014
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2023-04-24 11:46:50,448 Stage-2 map = 0%,  reduce = 0%
+2023-04-24 11:46:54,566 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 1.82 sec
+2023-04-24 11:46:59,685 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 4.32 sec
+MapReduce Total cumulative CPU time: 4 seconds 320 msec
+Ended Job = job_1682315757916_0014
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 4.96 sec   HDFS Read: 173467 HDFS Write: 7319 SUCCESS
+Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 4.32 sec   HDFS Read: 14781 HDFS Write: 6449 SUCCESS
+Total MapReduce CPU Time Spent: 9 seconds 280 msec
+OK
+LUKE    481
+HAN     438
+THREEPIO        295
+LEIA    222
+VADER   134
+BEN     101
+LANDO   96
+YODA    46
+RED LEADER      36
+EMPEROR 36
+BIGGS   34
+WEDGE   32
+PIETT   29
+TARKIN  28
+OWEN    25
+CREATURE        22
+TROOPER 19
+JABBA (in Huttese subtitled)    15
+GOLD LEADER     14
+OFFICER 13
+RIEEKAN 13
+ACKBAR  11
+COMMANDER       10
+BEN'S VOICE     10
+JABBA   10
+INTERCOM VOICE  8
+GOLD FIVE       7
+DECK OFFICER    7
+VEERS   7
+RED TEN 7
+ZEV     6
+JERJERROD       6
+GREEDO  6
+FIRST TROOPER   6
+DODONNA 6
+DEATH STAR INTERCOM VOICE       6
+AUNT BERU       6
+OZZEL   5
+CONTROLLER      5
+STORMTROOPER    5
+BOUSHH  5
+NINEDENINE      5
+BIB     5
+NEEDA   5
+HUMAN   4
+TAGGE   4
+DACK    4
+BOBA FETT       4
+MOTTI   4
+JANSON  4
+IMPERIAL OFFICER        4
+SECOND TROOPER  3
+ANNOUNCER       3
+HAN (cont)      3
+MASSASSI INTERCOM VOICE 3
+REBEL PILOT     3
+BARTENDER       3
+VOICE   3
+DERLIN  3
+TRENCH OFFICER  3
+CONTROLLER (over radio) 2
+MAN'S VOICE     2
+COMMUNICATIONS OFFICER  2
+PILOT   2
+CHIEF   2
+CAPTAIN 2
+CAMIE   2
+SHUTTLE CAPTAIN 2
+BOUSHH (in Ubese subtitled)     2
+GUARD   2
+TRACKING OFFICER        2
+STRANGE VOICE   2
+WILLARD 2
+GENERAL MADINE  2
+GANTRY OFFICER  2
+FIXER   2
+SENIOR CONTROLLER       2
+LIEUTENANT      2
+SCOUT #1        2
+MON MOTHMA      2
+MEDICAL DROID   2
+ACKBAR (VO)     2
+SECOND OFFICER  2
+GOLD TWO        2
+THREEPIO (to Wicket)    1
+STORMTROOPER (OS)       1
+SECOND THREEPIO 1
+SECOND CONTROLLER       1
+SECOND COMMANDER        1
+SCOUT #l        1
+SCOUT #2        1
+SCOUT   1
+RED TWO 1
+RED THREE       1
+RED TEN'S VOICE 1
+RED SEVEN       1
+RED NINE'S VOICE        1
+RED NINE        1
+RED LEADER'S VOICE      1
+RED LEADER (VO) 1
+TROOPER VOICE   1
+RED ELEVEN      1
+REBEL OFFICER   1
+REBEL FIGHTER   1
+REBEL CAPTAIN   1
+PORKINS 1
+PILOTS  1
+PILOT VOICE (HAN)(filtered)     1
+PILOT #2        1
+PIETT (surprised)       1
+PIETT (into comlink)    1
+VADER (a whisper)       1
+VADER (after a beat)    1
+OPERATOR        1
+OOLA    1
+OFFICER CASS    1
+VADER (bows)    1
+NINEDENINE (to a Gamorrean guard)       1
+NAVIGATOR       1
+MON MOTHMA (cont)       1
+LURE    1
+LUKE'S VOICE    1
+LUKE (with sadness)     1
+LUKE (turning away, derisive)   1
+LUKE (to Leia)  1
+LUKE (shrugging it off) 1
+LUKE (sarcastic)        1
+LUKE (pointing to the controls) 1
+LUKE (moving to his ship)       1
+LUKE (indicating the one ahead) 1
+LUKE (hesitant) 1
+LUKE (groans)   1
+LUKE (cont)     1
+LUKE (concerned)        1
+VADER (indicating lightsaber)   1
+LEIA (to Han)   1
+VADER (skeptical)       1
+LEIA (over comlink)     1
+LEIA (into comlink)     1
+LEIA (alarmed)  1
+VADER (turning to face him)     1
+LANDO (to himself)      1
+LANDO (smiling) 1
+LANDO (over comlink)    1
+LANDO (into comlink)    1
+LANDO (desperately)     1
+JERJERROD (aghast)      1
+VOICE (OS)      1
+JABBA (cont Huttese subtitled)  1
+VOICE OVER DEATH STAR INTERCOM  1
+WALKER PILOT #1 1
+IMPERIAL SOLDIER        1
+HOBBIE  1
+HEAD CONTROLLER 1
+HAN/PILOT (VO)  1
+HAN'S VOICE     1
+HAN and LUKE    1
+HAN (with self-confident grin)  1
+HAN (whispering to himself)     1
+HAN (turning to Luke)   1
+HAN (to Luke)   1
+HAN (to Leia)   1
+HAN (smiles)    1
+HAN (sighs)     1
+HAN (sarcastic) 1
+HAN (over comlink)      1
+HAN (loses his temper)  1
+HAN (looks at him warmly)       1
+HAN (grins)     1
+HAN (gravely)   1
+HAN (chuckles)  1
+HAN (blinking)  1
+HAN (angry)     1
+HAN (OS)        1
+WEDGE (VO)      1
+GREEN LEADER    1
+ANAKIN (very weak)      1
+GRAY LEADER     1
+WINGMAN 1
+ANAKIN  1
+FIRST OFFICER   1
+FIRST CONTROLLER        1
+EMPEROR (very cool)     1
+EMPEROR (to Vader)      1
+EMPEROR (to Luke)       1
+EMPEROR (no surprise)   1
+EMPEROR (laughs)        1
+EMPEROR (laughing)      1
+EMPEROR (cont)  1
+EMPEROR (angry) 1
+WINGMAN'S VOICE 1
+ACKBAR (cont)   1
+WOMAN   1
+DEATH STAR CONTROLLER(filtered VO)      1
+DEAK    1
+WOMAN CONTROLLER        1
+CONTROLLER (filtered)   1
+CONTROL ROOM COMMANDER  1
+CONTROL OFFICER 1
+Y-WING PILOT    1
+CHIEF PILOT     1
+BUNKER COMMANDER        1
+YODA (gathering all his strength)       1
+BIB (in Huttese subtitled)      1
+BERU    1
+YODA (shakes his head)  1
+BEN (grinning at Luke's indignation)    1
+BEN (continuing his narrative)  1
+BEN (attempting to give solace with his words)  1
+BEN (OS)        1
+YODA (tickled, chuckles)        1
+BASE VOICE      1
+LEIA (softly)   1
+ASTRO-OFFICER   1
+ASSISTANT OFFICER       1
+THREEPIO (still shaken) 1
+THREEPIO (instantly)    1
+THREEPIO (disappearing) 1
+THREEPIO (cont) 1
+THREEPIO (to Artoo)     1
+TECHNICIAN      1
+Time taken: 41.468 seconds, Fetched: 221 row(s)
+hive>
+
+    >
+    > INSERT OVERWRITE LOCAL DIRECTORY '/export'
+    > ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
+    > select charname, COUNT(*) as numofdiag  FROM inputdiag group by charname order by numofdiag desc;
+Query ID = root_20230424120853_acc269f7-75ee-4604-b9ac-0def0e8561bb
+Total jobs = 2
+Launching Job 1 out of 2
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1682315757916_0015, Tracking URL = http://6cb55f31383b:8088/proxy/application_1682315757916_0015/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1682315757916_0015
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-04-24 12:09:00,516 Stage-1 map = 0%,  reduce = 0%
+2023-04-24 12:09:04,644 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.32 sec
+2023-04-24 12:09:10,818 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 6.3 sec
+MapReduce Total cumulative CPU time: 6 seconds 300 msec
+Ended Job = job_1682315757916_0015
+Launching Job 2 out of 2
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1682315757916_0016, Tracking URL = http://6cb55f31383b:8088/proxy/application_1682315757916_0016/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1682315757916_0016
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2023-04-24 12:09:22,418 Stage-2 map = 0%,  reduce = 0%
+2023-04-24 12:09:27,547 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 2.05 sec
+2023-04-24 12:09:33,712 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 4.84 sec
+MapReduce Total cumulative CPU time: 4 seconds 840 msec
+Ended Job = job_1682315757916_0016
+Moving data to local directory /export
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 6.3 sec   HDFS Read: 173365 HDFS Write: 7319 SUCCESS
+Stage-Stage-2: Map: 1  Reduce: 1   Cumulative CPU: 4.84 sec   HDFS Read: 14361 HDFS Write: 3710 SUCCESS
+Total MapReduce CPU Time Spent: 11 seconds 140 msec
+OK
+Time taken: 41.026 seconds
+hive> exit
+    >
+    >
+    >
+    >
+    > exit
+    >
+    >
+    > root@6cb55f31383b:/#
+root@6cb55f31383b:/#
+root@6cb55f31383b:/#
+root@6cb55f31383b:/#
+root@6cb55f31383b:/# pwd
+/
+root@6cb55f31383b:/# ls
+EmpData.csv  dev                      etc         lib64         output.csv             root          srv          var
+bin          diagCount.pig            export      media         part-r-00000           run           sys          wordcount.pig
+boot         episodeIV_dialouges.txt  file01.txt  metastore_db  pig_1681370295850.log  sales.csv     tmp          zipcodes.csv
+csvFile.csv  episodeVI_dialouges.txt  home        mnt           pig_1682319010734.log  salesCSV.pig  txtFile.txt
+derby.log    episodeV_dialouges.txt   lib         opt           proc                   sbin          usr
+root@6cb55f31383b:/# cd /export
+root@6cb55f31383b:/export# ls
+000000_0
+root@6cb55f31383b:/export#
+root@6cb55f31383b:/export#
+root@6cb55f31383b:/export# cat 000000_0
+LUKE    481
+HAN     438
+THREEPIO        295
+LEIA    222
+VADER   134
+BEN     101
+LANDO   96
+YODA    46
+RED LEADER      36
+EMPEROR 36
+BIGGS   34
+WEDGE   32
+PIETT   29
+TARKIN  28
+OWEN    25
+CREATURE        22
+TROOPER 19
+JABBA (in Huttese subtitled)    15
+GOLD LEADER     14
+OFFICER 13
+RIEEKAN 13
+ACKBAR  11
+COMMANDER       10
+BEN'S VOICE     10
+JABBA   10
+INTERCOM VOICE  8
+GOLD FIVE       7
+DECK OFFICER    7
+VEERS   7
+RED TEN 7
+ZEV     6
+JERJERROD       6
+GREEDO  6
+FIRST TROOPER   6
+DODONNA 6
+DEATH STAR INTERCOM VOICE       6
+AUNT BERU       6
+OZZEL   5
+CONTROLLER      5
+STORMTROOPER    5
+BOUSHH  5
+NINEDENINE      5
+BIB     5
+NEEDA   5
+HUMAN   4
+TAGGE   4
+DACK    4
+BOBA FETT       4
+MOTTI   4
+JANSON  4
+IMPERIAL OFFICER        4
+SECOND TROOPER  3
+ANNOUNCER       3
+HAN (cont)      3
+MASSASSI INTERCOM VOICE 3
+REBEL PILOT     3
+BARTENDER       3
+VOICE   3
+DERLIN  3
+TRENCH OFFICER  3
+CONTROLLER (over radio) 2
+MAN'S VOICE     2
+COMMUNICATIONS OFFICER  2
+PILOT   2
+CHIEF   2
+CAPTAIN 2
+CAMIE   2
+SHUTTLE CAPTAIN 2
+BOUSHH (in Ubese subtitled)     2
+GUARD   2
+TRACKING OFFICER        2
+STRANGE VOICE   2
+WILLARD 2
+GENERAL MADINE  2
+GANTRY OFFICER  2
+FIXER   2
+SENIOR CONTROLLER       2
+LIEUTENANT      2
+SCOUT #1        2
+MON MOTHMA      2
+MEDICAL DROID   2
+ACKBAR (VO)     2
+SECOND OFFICER  2
+GOLD TWO        2
+THREEPIO (to Wicket)    1
+STORMTROOPER (OS)       1
+SECOND THREEPIO 1
+SECOND CONTROLLER       1
+SECOND COMMANDER        1
+SCOUT #l        1
+SCOUT #2        1
+SCOUT   1
+RED TWO 1
+RED THREE       1
+RED TEN'S VOICE 1
+RED SEVEN       1
+RED NINE'S VOICE        1
+RED NINE        1
+RED LEADER'S VOICE      1
+RED LEADER (VO) 1
+TROOPER VOICE   1
+RED ELEVEN      1
+REBEL OFFICER   1
+REBEL FIGHTER   1
+REBEL CAPTAIN   1
+PORKINS 1
+PILOTS  1
+PILOT VOICE (HAN)(filtered)     1
+PILOT #2        1
+PIETT (surprised)       1
+PIETT (into comlink)    1
+VADER (a whisper)       1
+VADER (after a beat)    1
+OPERATOR        1
+OOLA    1
+OFFICER CASS    1
+VADER (bows)    1
+NINEDENINE (to a Gamorrean guard)       1
+NAVIGATOR       1
+MON MOTHMA (cont)       1
+LURE    1
+LUKE'S VOICE    1
+LUKE (with sadness)     1
+LUKE (turning away, derisive)   1
+LUKE (to Leia)  1
+LUKE (shrugging it off) 1
+LUKE (sarcastic)        1
+LUKE (pointing to the controls) 1
+LUKE (moving to his ship)       1
+LUKE (indicating the one ahead) 1
+LUKE (hesitant) 1
+LUKE (groans)   1
+LUKE (cont)     1
+LUKE (concerned)        1
+VADER (indicating lightsaber)   1
+LEIA (to Han)   1
+VADER (skeptical)       1
+LEIA (over comlink)     1
+LEIA (into comlink)     1
+LEIA (alarmed)  1
+VADER (turning to face him)     1
+LANDO (to himself)      1
+LANDO (smiling) 1
+LANDO (over comlink)    1
+LANDO (into comlink)    1
+LANDO (desperately)     1
+JERJERROD (aghast)      1
+VOICE (OS)      1
+JABBA (cont Huttese subtitled)  1
+VOICE OVER DEATH STAR INTERCOM  1
+WALKER PILOT #1 1
+IMPERIAL SOLDIER        1
+HOBBIE  1
+HEAD CONTROLLER 1
+HAN/PILOT (VO)  1
+HAN'S VOICE     1
+HAN and LUKE    1
+HAN (with self-confident grin)  1
+HAN (whispering to himself)     1
+HAN (turning to Luke)   1
+HAN (to Luke)   1
+HAN (to Leia)   1
+HAN (smiles)    1
+HAN (sighs)     1
+HAN (sarcastic) 1
+HAN (over comlink)      1
+HAN (loses his temper)  1
+HAN (looks at him warmly)       1
+HAN (grins)     1
+HAN (gravely)   1
+HAN (chuckles)  1
+HAN (blinking)  1
+HAN (angry)     1
+HAN (OS)        1
+WEDGE (VO)      1
+GREEN LEADER    1
+ANAKIN (very weak)      1
+GRAY LEADER     1
+WINGMAN 1
+ANAKIN  1
+FIRST OFFICER   1
+FIRST CONTROLLER        1
+EMPEROR (very cool)     1
+EMPEROR (to Vader)      1
+EMPEROR (to Luke)       1
+EMPEROR (no surprise)   1
+EMPEROR (laughs)        1
+EMPEROR (laughing)      1
+EMPEROR (cont)  1
+EMPEROR (angry) 1
+WINGMAN'S VOICE 1
+ACKBAR (cont)   1
+WOMAN   1
+DEATH STAR CONTROLLER(filtered VO)      1
+DEAK    1
+WOMAN CONTROLLER        1
+CONTROLLER (filtered)   1
+CONTROL ROOM COMMANDER  1
+CONTROL OFFICER 1
+Y-WING PILOT    1
+CHIEF PILOT     1
+BUNKER COMMANDER        1
+YODA (gathering all his strength)       1
+BIB (in Huttese subtitled)      1
+BERU    1
+YODA (shakes his head)  1
+BEN (grinning at Luke's indignation)    1
+BEN (continuing his narrative)  1
+BEN (attempting to give solace with his words)  1
+BEN (OS)        1
+YODA (tickled, chuckles)        1
+BASE VOICE      1
+LEIA (softly)   1
+ASTRO-OFFICER   1
+ASSISTANT OFFICER       1
+THREEPIO (still shaken) 1
+THREEPIO (instantly)    1
+THREEPIO (disappearing) 1
+THREEPIO (cont) 1
+THREEPIO (to Artoo)     1
+TECHNICIAN      1
+root@6cb55f31383b:/export#
+root@6cb55f31383b:/export# pwd
+/export
+root@6cb55f31383b:/export# cat * > diagCount.csv
+root@6cb55f31383b:/export# ls
+000000_0  diagCount.csv
+root@6cb55f31383b:/export# cat diagCount.csv
+LUKE    481
+HAN     438
+THREEPIO        295
+LEIA    222
+VADER   134
+BEN     101
+LANDO   96
+YODA    46
+RED LEADER      36
+EMPEROR 36
+BIGGS   34
+WEDGE   32
+PIETT   29
+TARKIN  28
+OWEN    25
+CREATURE        22
+TROOPER 19
+JABBA (in Huttese subtitled)    15
+GOLD LEADER     14
+OFFICER 13
+RIEEKAN 13
+ACKBAR  11
+COMMANDER       10
+BEN'S VOICE     10
+JABBA   10
+INTERCOM VOICE  8
+GOLD FIVE       7
+DECK OFFICER    7
+VEERS   7
+RED TEN 7
+ZEV     6
+JERJERROD       6
+GREEDO  6
+FIRST TROOPER   6
+DODONNA 6
+DEATH STAR INTERCOM VOICE       6
+AUNT BERU       6
+OZZEL   5
+CONTROLLER      5
+STORMTROOPER    5
+BOUSHH  5
+NINEDENINE      5
+BIB     5
+NEEDA   5
+HUMAN   4
+TAGGE   4
+DACK    4
+BOBA FETT       4
+MOTTI   4
+JANSON  4
+IMPERIAL OFFICER        4
+SECOND TROOPER  3
+ANNOUNCER       3
+HAN (cont)      3
+MASSASSI INTERCOM VOICE 3
+REBEL PILOT     3
+BARTENDER       3
+VOICE   3
+DERLIN  3
+TRENCH OFFICER  3
+CONTROLLER (over radio) 2
+MAN'S VOICE     2
+COMMUNICATIONS OFFICER  2
+PILOT   2
+CHIEF   2
+CAPTAIN 2
+CAMIE   2
+SHUTTLE CAPTAIN 2
+BOUSHH (in Ubese subtitled)     2
+GUARD   2
+TRACKING OFFICER        2
+STRANGE VOICE   2
+WILLARD 2
+GENERAL MADINE  2
+GANTRY OFFICER  2
+FIXER   2
+SENIOR CONTROLLER       2
+LIEUTENANT      2
+SCOUT #1        2
+MON MOTHMA      2
+MEDICAL DROID   2
+ACKBAR (VO)     2
+SECOND OFFICER  2
+GOLD TWO        2
+THREEPIO (to Wicket)    1
+STORMTROOPER (OS)       1
+SECOND THREEPIO 1
+SECOND CONTROLLER       1
+SECOND COMMANDER        1
+SCOUT #l        1
+SCOUT #2        1
+SCOUT   1
+RED TWO 1
+RED THREE       1
+RED TEN'S VOICE 1
+RED SEVEN       1
+RED NINE'S VOICE        1
+RED NINE        1
+RED LEADER'S VOICE      1
+RED LEADER (VO) 1
+TROOPER VOICE   1
+RED ELEVEN      1
+REBEL OFFICER   1
+REBEL FIGHTER   1
+REBEL CAPTAIN   1
+PORKINS 1
+PILOTS  1
+PILOT VOICE (HAN)(filtered)     1
+PILOT #2        1
+PIETT (surprised)       1
+PIETT (into comlink)    1
+VADER (a whisper)       1
+VADER (after a beat)    1
+OPERATOR        1
+OOLA    1
+OFFICER CASS    1
+VADER (bows)    1
+NINEDENINE (to a Gamorrean guard)       1
+NAVIGATOR       1
+MON MOTHMA (cont)       1
+LURE    1
+LUKE'S VOICE    1
+LUKE (with sadness)     1
+LUKE (turning away, derisive)   1
+LUKE (to Leia)  1
+LUKE (shrugging it off) 1
+LUKE (sarcastic)        1
+LUKE (pointing to the controls) 1
+LUKE (moving to his ship)       1
+LUKE (indicating the one ahead) 1
+LUKE (hesitant) 1
+LUKE (groans)   1
+LUKE (cont)     1
+LUKE (concerned)        1
+VADER (indicating lightsaber)   1
+LEIA (to Han)   1
+VADER (skeptical)       1
+LEIA (over comlink)     1
+LEIA (into comlink)     1
+LEIA (alarmed)  1
+VADER (turning to face him)     1
+LANDO (to himself)      1
+LANDO (smiling) 1
+LANDO (over comlink)    1
+LANDO (into comlink)    1
+LANDO (desperately)     1
+JERJERROD (aghast)      1
+VOICE (OS)      1
+JABBA (cont Huttese subtitled)  1
+VOICE OVER DEATH STAR INTERCOM  1
+WALKER PILOT #1 1
+IMPERIAL SOLDIER        1
+HOBBIE  1
+HEAD CONTROLLER 1
+HAN/PILOT (VO)  1
+HAN'S VOICE     1
+HAN and LUKE    1
+HAN (with self-confident grin)  1
+HAN (whispering to himself)     1
+HAN (turning to Luke)   1
+HAN (to Luke)   1
+HAN (to Leia)   1
+HAN (smiles)    1
+HAN (sighs)     1
+HAN (sarcastic) 1
+HAN (over comlink)      1
+HAN (loses his temper)  1
+HAN (looks at him warmly)       1
+HAN (grins)     1
+HAN (gravely)   1
+HAN (chuckles)  1
+HAN (blinking)  1
+HAN (angry)     1
+HAN (OS)        1
+WEDGE (VO)      1
+GREEN LEADER    1
+ANAKIN (very weak)      1
+GRAY LEADER     1
+WINGMAN 1
+ANAKIN  1
+FIRST OFFICER   1
+FIRST CONTROLLER        1
+EMPEROR (very cool)     1
+EMPEROR (to Vader)      1
+EMPEROR (to Luke)       1
+EMPEROR (no surprise)   1
+EMPEROR (laughs)        1
+EMPEROR (laughing)      1
+EMPEROR (cont)  1
+EMPEROR (angry) 1
+WINGMAN'S VOICE 1
+ACKBAR (cont)   1
+WOMAN   1
+DEATH STAR CONTROLLER(filtered VO)      1
+DEAK    1
+WOMAN CONTROLLER        1
+CONTROLLER (filtered)   1
+CONTROL ROOM COMMANDER  1
+CONTROL OFFICER 1
+Y-WING PILOT    1
+CHIEF PILOT     1
+BUNKER COMMANDER        1
+YODA (gathering all his strength)       1
+BIB (in Huttese subtitled)      1
+BERU    1
+YODA (shakes his head)  1
+BEN (grinning at Luke's indignation)    1
+BEN (continuing his narrative)  1
+BEN (attempting to give solace with his words)  1
+BEN (OS)        1
+YODA (tickled, chuckles)        1
+BASE VOICE      1
+LEIA (softly)   1
+ASTRO-OFFICER   1
+ASSISTANT OFFICER       1
+THREEPIO (still shaken) 1
+THREEPIO (instantly)    1
+THREEPIO (disappearing) 1
+THREEPIO (cont) 1
+THREEPIO (to Artoo)     1
+TECHNICIAN      1
+root@6cb55f31383b:/export# pwd
+/export
+root@6cb55f31383b:/export# ls
+000000_0  diagCount.csv
+root@6cb55f31383b:/export#
+root@6cb55f31383b:/export# ls
+000000_0  diagCount.csv
+root@6cb55f31383b:/export# pwd
+/export
+root@6cb55f31383b:/export#
